@@ -21,7 +21,7 @@ Game::~Game() {
 void Game::init() {
 	initGL();
 
-	_renderer.init();
+	_renderer.init(_deviceSize);
 }
 
 void Game::initGL() {
@@ -89,7 +89,8 @@ void Game::handleResize(int width, int height) {
 		vy = (int) ((height - vh) / 2);
 	}
 
-	_windowViewport = glm::vec4(vx, vy, vw, vh);
+	_renderer.setViewport(glm::ivec4(vx, vy, vw, vh));
+
 }
 
 
@@ -109,7 +110,9 @@ void Game::run() {
 		last = now;
 
 		room->update(dt);
-		room->render(_renderer);
+
+		_renderer.render(*room);
+
 		glfwSwapBuffers(_window);
 	}
 
@@ -117,4 +120,8 @@ void Game::run() {
 
 void Game::setRoomFactory(std::unique_ptr<RoomFactory> factory) {
 	_roomFactory = std::move(factory);
+}
+
+void Game::addRenderPass(RenderPass pass) {
+	_renderer.addRenderPass(std::move(pass));
 }

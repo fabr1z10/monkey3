@@ -8,14 +8,16 @@ template <typename VERTEX>
 class Batch {
 public:
 	void init();
-	void clear();
+	void clear() {
+		vertices.clear();
+		indices.clear();
+	}
 	void upload();
 	void draw(GLenum mode);
 
 	std::vector<VERTEX> vertices;
 	std::vector<uint32_t> indices;
 
-private:
 	GLuint vao = 0;
 	GLuint vbo = 0;
 	GLuint ebo = 0;

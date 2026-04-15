@@ -65,3 +65,43 @@ GLuint Shader::compileShader(GLenum type, const char* code, const char* stage, c
 void Shader::use() const {
 	glUseProgram(_id);
 }
+
+GLint Shader::getUniformLocation(const std::string &name) const {
+	auto it = _uniformLocationCache.find(name);
+	if (it == _uniformLocationCache.end()) {
+		GLint location = glGetUniformLocation(_id, name.c_str());
+		if (location == -1) {
+			throw std::runtime_error("Uniform '" + name + "' not found in shader");
+		}
+		_uniformLocationCache[name] = location;
+		return location;
+	} else {
+		return it->second;
+	}
+
+}
+
+void Shader::setInt(const std::string &name, int value) {
+	glUniform1i(getUniformLocation(name), value);
+}
+
+void Shader::setFloat(const std::string &name, float value) {
+	glUniform1f(getUniformLocation(name), value);
+}
+
+void Shader::setMat4(const std::string &name, const glm::mat4& mat) {
+	glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, &mat[0][0]);
+}
+
+
+void Shader::setMat3(const std::string &name, const glm::mat3 &mat) {
+	glUniformMatrix3fv(getUniformLocation(name), 1, GL_FALSE, &mat[0][0]);
+}
+
+void Shader::setVec4(const std::string &name, const glm::vec4 &value) {
+	glUniform4fv(getUniformLocation(name), 1, &value[0]);
+}
+
+void Shader::setVec3(const std::string &name, const glm::vec3 &value) {
+	glUniform3fv(getUniformLocation(name), 1, &value[0]);
+}

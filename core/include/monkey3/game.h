@@ -24,6 +24,8 @@ public:
 	void handleResize(int width, int height);
 
 	void setRoomFactory(std::unique_ptr<RoomFactory> factory);
+
+	void addRenderPass(RenderPass pass);
 private:
 	static void windowResizeCallback(GLFWwindow* win, int width, int height);
 
