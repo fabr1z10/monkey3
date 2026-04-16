@@ -1,0 +1,21 @@
+# Build folders
+cmake-build-debug/
+cmake-build-release/
+build/
+out/
+
+# CMake generated files
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+compile_commands.json
+
+# Compiled binaries
+*.o
+*.obj
+*.so
+*.a
+*.lib
+*.dll
+*.exe
