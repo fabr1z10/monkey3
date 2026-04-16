@@ -23,7 +23,7 @@ FetchContent_MakeAvailable(catch2)
 find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(glfw3 REQUIRED)
-find_package(PNG REQUIRED)
+#find_package(PNG REQUIRED)
 find_package(yaml-cpp REQUIRED)
 
 # ----------------------------------------------------
@@ -33,7 +33,8 @@ file(GLOB ENGINE_SOURCES CONFIGURE_DEPENDS core/src/*.cpp)
 
 add_library(monkey_core STATIC ${ENGINE_SOURCES})
 
-target_include_directories(monkey_core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/core/include ${CMAKE_CURRENT_SOURCE_DIR}/external/glm)
+target_include_directories(monkey_core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/core/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/external/glm ${CMAKE_CURRENT_SOURCE_DIR}/core/external/stb)
 
 target_link_libraries(monkey_core PUBLIC ${OPENGL_LIBRARIES} ${GLEW_LIBRARIES} glfw ${PNG_LIBRARIES} ${YAML_CPP_LIBRARIES})
 
