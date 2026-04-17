@@ -2,7 +2,7 @@
 #include "monkey3/utils.h"
 #include <string>
 #include <stdexcept>
-
+#include <iostream>
 
 Shader::Shader(const std::string& vertexPath, const std::string& fragmentPath) {
 	std::string vertexSrc = loadFile(vertexPath);
@@ -52,6 +52,7 @@ GLuint Shader::compileShader(GLenum type, const char* code, const char* stage, c
 		glGetShaderiv(sid, GL_INFO_LOG_LENGTH, &len);
 		std::string log(len, '\0');
 		glGetShaderInfoLog(sid, len, nullptr, log.data());
+		std::cerr << log << "\n";
 		throw std::runtime_error(
 				"Shader compile error\n"
 				"File: " + fileName + "\n"

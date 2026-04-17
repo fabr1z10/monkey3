@@ -1,6 +1,6 @@
 #include "monkey3/camera.h"
 #include <glm/gtc/matrix_transform.hpp>
-#include <functional>
+#include <algorithm>
 
 Camera::Camera() {
 	setPosition(glm::vec3(0.f, 0.f, 5.f), glm::vec3(0.f, 0.f, -1.f), glm::vec3(0.f, 1.f, 0.f));
