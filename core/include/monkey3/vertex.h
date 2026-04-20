@@ -9,6 +9,7 @@ struct QuadVertex {
 	glm::vec3 pos;
 	glm::vec2 uv;
 	glm::vec4 color;
+	float texIndex;
 };
 
 struct LineVertex {
@@ -38,6 +39,9 @@ struct VertexTraits<QuadVertex>
 		glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE,
 							  sizeof(QuadVertex),
 							  (void*)offsetof(QuadVertex, color));
+
+		glEnableVertexAttribArray(3);
+		glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, sizeof(QuadVertex), (void*)offsetof(QuadVertex, texIndex));
 	}
 };
 

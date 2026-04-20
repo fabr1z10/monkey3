@@ -26,6 +26,8 @@ public:
 	void setRoomFactory(std::unique_ptr<RoomFactory> factory);
 
 	void addRenderPass(RenderPass pass);
+
+	void registerTexture(const std::string& path);
 private:
 	static void windowResizeCallback(GLFWwindow* win, int width, int height);
 

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include "glm/glm.hpp"
 #include "vertex.h"
 #include "batch.h"
@@ -8,10 +9,15 @@
 #include <optional>
 #include <memory>
 #include "monkey3/camera.h"
+#include "monkey3/tex.h"
+
 
 class Room;
 
+static constexpr int MAX_TEXTURE_SLOTS = 16;
+
 using RenderLayerMask = uint32_t;
+
 
 struct RenderPass {
 	RenderPass();
@@ -32,6 +38,8 @@ public:
 
 	void init(glm::ivec2 deviceSize);
 
+	void clear();
+
 	void beginFrame();   // clear + reset batches
 	void beginPass(const RenderPass&);
 	void render(Room& room);
@@ -41,7 +49,7 @@ public:
 
 	void initBatches();
 
-	void submitQuad(const glm::vec2& pos, const glm::vec2& size, const glm::vec4& uvRect, const glm::vec4& color);
+	void submitQuad(const glm::vec2& pos, const glm::vec2& size, const glm::vec4& uvRect, const glm::vec4& color, int textureId);
 
 	void submitLine(const glm::vec2& start, const glm::vec2& end, const glm::vec4& color);
 
@@ -50,9 +58,11 @@ public:
 	void addRenderPass(RenderPass pass);
 
 	void clearRenderPasses();
+
+	void registerTexture(const std::string& path);
 private:
 	template<typename T>
-	void draw(Batch<T>& batch, const Shader& shader, GLenum mode) {
+	void draw(Batch<T>& batch, GLenum mode) {
 		glBindVertexArray(batch.vao);
 		// =========================
 		// CPU → GPU upload (SUBDATA)
@@ -63,7 +73,6 @@ private:
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, batch.ebo);
 		glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, batch.indices.size() * sizeof(uint32_t), batch.indices.data());
 
-		shader.use();
 		glDrawElements(mode,
 			batch.indices.size(),
 			GL_UNSIGNED_INT,
@@ -113,4 +122,6 @@ private:
 	GLint _uSceneLoc = -1;
 
 	std::vector<RenderPass> _passes;
+
+	std::vector<Tex> _textures;
 };

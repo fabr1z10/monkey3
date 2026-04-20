@@ -39,6 +39,8 @@ void Game::initGL() {
 		throw std::runtime_error("Failed to open GLFW window. If you have an Intel GPU, they are not 3.3 compatible. Try the 2.1 version of the tutorials.");
 	}
 	glfwMakeContextCurrent(_window);
+	//glfwMakeContextCurrent(_window);
+	glfwSwapInterval(1); // ← add this, caps to monitor refresh rate
 	glfwSetWindowUserPointer(_window, this);
 	glfwSetFramebufferSizeCallback(_window, Game::windowResizeCallback);
 	glfwSetKeyCallback(_window, Game::keyCallback);
@@ -100,7 +102,7 @@ void Game::keyCallback(GLFWwindow *window, int key, int scancode, int action, in
 
 void Game::run() {
 	if (!_roomFactory) throw std::runtime_error("Room factory not set");
-	auto room = _roomFactory->createRoom();
+	auto room = _roomFactory->createRoom(_renderer);
 	double last = glfwGetTime();
 	while (!glfwWindowShouldClose(_window)) {
 		// TO DO
@@ -124,4 +126,8 @@ void Game::setRoomFactory(std::unique_ptr<RoomFactory> factory) {
 
 void Game::addRenderPass(RenderPass pass) {
 	_renderer.addRenderPass(std::move(pass));
+}
+
+void Game::registerTexture(const std::string &path) {
+	_renderer.registerTexture(path);
 }

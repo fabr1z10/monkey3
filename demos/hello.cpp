@@ -14,7 +14,7 @@ public:
 
 class TestRoomFactory : public RoomFactory {
 public:
-	std::unique_ptr<Room> createRoom() override {
+	std::unique_ptr<Room> createRoom(Renderer&) override {
 		return std::make_unique<DoNothingRoom>();
 	}
 };

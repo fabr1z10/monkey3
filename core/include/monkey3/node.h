@@ -29,6 +29,7 @@ public:
 
 	void addChild(std::unique_ptr<Node> child);
 
+	void addRenderable(std::unique_ptr<Renderable> renderable);
 protected:
 	void updateLocalTransform();
 	void updateWorldTransform();

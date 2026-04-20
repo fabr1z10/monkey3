@@ -80,15 +80,22 @@ glm::mat4 Node::getWorldTransform() {
 
 void Node::addChild(std::unique_ptr<Node> child) {
 	child->_parent = this;
-	_children.push_back(std::move(child));
 	child->markDirty();
+
+	_children.push_back(std::move(child));
+}
+
+void Node::addRenderable(std::unique_ptr<Renderable> renderable) {
+	_renderable = (std::move(renderable));
 }
 
 void Node::render(Renderer &r, const RenderContext& ctx) {
 
 	bool visible = (_layerMask & ctx.layerMask) != 0;
 
-	if (visible && _renderable)
+	if (visible && _renderable) {
+		_renderable->render(r, _worldTransform);
+	}
 		;// TO DO CALL RENDERABLE->REBDER _renderable->render(r, getWorldTransform());
 
 	for (auto& child : _children)

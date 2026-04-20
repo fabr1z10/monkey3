@@ -10,9 +10,14 @@ class Room {
 public:
 	Room();
 	virtual ~Room() = default;
-	virtual void update(float dt) = 0;
+	virtual void update(float dt) {}
 	virtual void render(Renderer&, const RenderContext&);
-
+	Node* getRoot();
 private:
 	std::unique_ptr<Node> _root;
 };
+
+inline Node *Room::getRoot() {
+
+	return _root.get();
+}
