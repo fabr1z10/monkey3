@@ -14,6 +14,8 @@
 
 class Room;
 
+class Game;
+
 static constexpr int MAX_TEXTURE_SLOTS = 16;
 
 using RenderLayerMask = uint32_t;
@@ -23,8 +25,13 @@ struct RenderPass {
 	RenderPass();
 	RenderPass(int width, int height, uint32_t mask);
 
-	std::unique_ptr<Camera> camera = nullptr;
+	std::unique_ptr<OrthoCamera> camera = nullptr;
 	glm::ivec4 viewport{0, 0, 0, 0};
+
+	glm::vec2 getWorldCoordinates(glm::vec2 deviceCoordinates) const;
+
+
+
 	uint32_t layerMask = 0xFFFFFFFF;
 };
 
@@ -35,10 +42,13 @@ struct RenderContext {
 class Renderer {
 
 public:
+	Renderer(Game& game) : _game(game) {}
 
 	void init(glm::ivec2 deviceSize);
 
 	void clear();
+
+	const Tex* const getTexture(size_t slot);
 
 	void beginFrame();   // clear + reset batches
 	void beginPass(const RenderPass&);
@@ -57,9 +67,10 @@ public:
 
 	void addRenderPass(RenderPass pass);
 
+	const RenderPass& getRenderPass(int index) const;
 	void clearRenderPasses();
 
-	void registerTexture(const std::string& path);
+	size_t registerTexture(const std::string& path);
 private:
 	template<typename T>
 	void draw(Batch<T>& batch, GLenum mode) {
@@ -103,6 +114,7 @@ private:
 					 GL_DYNAMIC_DRAW);
 	}
 
+	Game& _game;
 	void initScreenQuad();
 	void drawScreenQuad();
 	Batch<QuadVertex> _quadBatch;
@@ -123,5 +135,15 @@ private:
 
 	std::vector<RenderPass> _passes;
 
-	std::vector<Tex> _textures;
+	std::vector<std::shared_ptr<Tex>> _textures;
+	std::unordered_map<std::string, size_t> _textureSlotCache;
+	//std::unordered_map<uint32_t, size_t> _layerMaskToPassIndex;
 };
+
+inline const RenderPass &Renderer::getRenderPass(int index) const {
+	return _passes[index];
+}
+
+inline const Tex *const Renderer::getTexture(size_t slot) {
+	return _textures[slot].get();
+}

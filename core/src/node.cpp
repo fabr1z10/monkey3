@@ -94,7 +94,7 @@ void Node::render(Renderer &r, const RenderContext& ctx) {
 	bool visible = (_layerMask & ctx.layerMask) != 0;
 
 	if (visible && _renderable) {
-		_renderable->render(r, _worldTransform);
+		_renderable->render(r, getWorldTransform());
 	}
 		;// TO DO CALL RENDERABLE->REBDER _renderable->render(r, getWorldTransform());
 

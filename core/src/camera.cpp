@@ -33,6 +33,11 @@ void Camera::setPosition(glm::vec3 eye, glm::vec3 direction, glm::vec3 up) {
 	updateViewMatrix();
 }
 
+void Camera::setPosition(glm::vec2 eye) {
+	_eye = clampPosition({eye.x, eye.y, _eye.z});
+	updateViewMatrix();
+}
+
 glm::vec3 Camera::clampPosition(const glm::vec3 &pos) {
 	glm::vec3 result = pos;
 
@@ -45,4 +50,35 @@ glm::vec3 Camera::clampPosition(const glm::vec3 &pos) {
 
 void Camera::updateViewMatrix() {
 	_viewMatrix = glm::lookAt(_eye, _eye + _fwd, _up);
+}
+
+void Camera::setXBounds(float min, float max) {
+	assert(min <= max);
+	_xBounds = glm::vec2(min, max);
+	_eye = clampPosition(_eye);
+	updateViewMatrix();
+}
+
+void Camera::setYBounds(float min, float max) {
+	assert(min <= max);
+	_yBounds = glm::vec2(min, max);
+	_eye = clampPosition(_eye);
+	updateViewMatrix();
+}
+
+void Camera::setZBounds(float min, float max) {
+	assert(min <= max);
+	_zBounds = glm::vec2(min, max);
+	_eye = clampPosition(_eye);
+	updateViewMatrix();
+}
+
+void Camera::clearXBounds() { _xBounds.reset(); }
+void Camera::clearYBounds() { _yBounds.reset(); }
+void Camera::clearZBounds() { _zBounds.reset(); }
+
+void Camera::clearBounds() {
+	_xBounds.reset();
+	_yBounds.reset();
+	_zBounds.reset();
 }

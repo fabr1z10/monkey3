@@ -4,7 +4,7 @@
 #include <cmath>
 
 Game::Game(const glm::ivec2& deviceSize, const glm::ivec2& windowSize, const std::string &title) :
-	_window(nullptr), _deviceSize(deviceSize), _windowSize(windowSize), _title(title) {
+	_window(nullptr), _renderer(*this), _assetManager(*this), _deviceSize(deviceSize), _windowSize(windowSize), _title(title) {
 	if (_deviceSize.y == 0) {
 		throw std::invalid_argument("deviceSize.y cannot be zero");
 	}
@@ -20,6 +20,13 @@ Game::~Game() {
 
 void Game::init() {
 	initGL();
+
+	// the 2 following calls should be done only if MOUSE is on
+	glfwSetMouseButtonCallback(_window, mouseButtonCallback);
+	glfwSetCursorPosCallback(_window, cursor_pos_callback);
+
+
+
 
 	_renderer.init(_deviceSize);
 }
@@ -70,11 +77,36 @@ void Game::windowResizeCallback(GLFWwindow *win, int width, int height) {
 	game->handleResize(width, height);
 }
 
+void Game::mouseButtonCallback(GLFWwindow *win, int button, int action, int mods) {
+	auto* game = static_cast<Game*>(glfwGetWindowUserPointer(win));
+	if (!game) return;
+	game->handleMouseButton(button, action, mods);
+}
+
+void Game::cursor_pos_callback(GLFWwindow * win, double xpos, double ypos) {
+	auto* game = static_cast<Game*>(glfwGetWindowUserPointer(win));
+	if (!game) return;
+	game->handleMouseMove(xpos, ypos);
+}
+
+
+void Game::handleMouseButton(int button, int action, int mods) {
+	for (auto& listener : _mouseListeners) {
+		listener->mouseButtonCallback(_window, button, action, mods);
+	}
+}
+
+void Game::handleMouseMove(double xpos, double ypos) {
+	for (auto& listener : _mouseListeners) {
+		listener->cursorPosCallback(_window, xpos, ypos);
+	}
+}
 
 void Game::handleResize(int width, int height) {
 	if (height == 0) {
 		height = 1;
 	}
+	_screenHeight = height;
 	float winAspectRatio = static_cast<float>(width) / height;
 	int vx, vy, vw, vh;
 	if (winAspectRatio > _deviceAspectRatio) {
@@ -90,8 +122,8 @@ void Game::handleResize(int width, int height) {
 		vx = 0;
 		vy = (int) ((height - vh) / 2);
 	}
-
-	_renderer.setViewport(glm::ivec4(vx, vy, vw, vh));
+	_windowViewport = glm::ivec4(vx, vy, vw, vh);
+	_renderer.setViewport(_windowViewport);
 
 }
 
@@ -102,7 +134,7 @@ void Game::keyCallback(GLFWwindow *window, int key, int scancode, int action, in
 
 void Game::run() {
 	if (!_roomFactory) throw std::runtime_error("Room factory not set");
-	auto room = _roomFactory->createRoom(_renderer);
+	auto room = _roomFactory->createRoom();
 	double last = glfwGetTime();
 	while (!glfwWindowShouldClose(_window)) {
 		// TO DO
@@ -128,6 +160,26 @@ void Game::addRenderPass(RenderPass pass) {
 	_renderer.addRenderPass(std::move(pass));
 }
 
-void Game::registerTexture(const std::string &path) {
-	_renderer.registerTexture(path);
+void Game::registerToMouseEvent(MouseListener * listener) {
+	_mouseListeners.insert(listener);
+}
+
+void Game::unregisterToMouseEvent(MouseListener * listener) {
+	_mouseListeners.erase(listener);
+}
+
+//void Game::registerTexture(std::shared_ptr<Tex> tex) {
+//	_renderer.registerTexture(tex);
+//}
+
+glm::vec2 Game::getDeviceCoordinates(glm::vec2 s) {
+
+	float devx = (s.x - _windowViewport.x) * _deviceSize.x / _windowViewport[2];
+	float devy = (_screenHeight - s.y - _windowViewport.y) * _deviceSize.y / _windowViewport[3];
+	return {devx, devy};
+}
+
+bool Game::isInDeviceCoordinates(glm::vec2 s) const {
+
+	return s.x >= 0 && s.x <= _deviceSize.x && s.y >= 0 && s.y <= _deviceSize.y;
 }

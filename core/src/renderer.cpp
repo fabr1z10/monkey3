@@ -1,13 +1,23 @@
 #include "monkey3/renderer.h"
 #include "monkey3/utils.h"
 #include "monkey3/room.h"
-
+#include "monkey3/game.h"
 
 RenderPass::RenderPass() {}
+
+
 RenderPass::RenderPass(int width, int height, uint32_t mask) {
 	camera = std::make_unique<OrthoCamera>(width, height, 0.1f, 100.f);
 	viewport = {0, 0, width, height};
 	layerMask = mask;
+}
+
+glm::vec2 RenderPass::getWorldCoordinates(glm::vec2 deviceCoordinates) const {
+	auto eye = camera->getEye();
+	auto orthoSize = camera->getSize();
+	float xw = eye.x - (orthoSize.x * 0.5f) + (deviceCoordinates.x - viewport.x) * (orthoSize.x / viewport[2]);
+	float yw = eye.y - (orthoSize.y * 0.5f) + (deviceCoordinates.y - viewport.y) * (orthoSize.y / viewport[3]);
+	return {xw, yw};
 }
 
 void Renderer::init(glm::ivec2 deviceSize) {
@@ -62,13 +72,15 @@ void Renderer::render(Room &room) {
 
 		_quadBatch.clear();
 		_lineBatch.clear();
-		room.render(*this, {pass.layerMask});
+		// Remember. first you clear all vertices and indices from the batches, then you render the room,
+		// which will submit new vertices and indices to the batches, then you flush the batches to the GPU.
+		room.render({pass.layerMask});
 		// flush batches
 		_quadShader->use();
 		_quadShader->setMat4("uVP", vp);
 		for (int i = 0; i < _textures.size(); i++) {
 			glActiveTexture(GL_TEXTURE0 + i);
-			_textures[i].bind();
+			_textures[i]->bind();
 		}
 		draw(_quadBatch, GL_TRIANGLES);
 		_lineShader->use();
@@ -173,6 +185,20 @@ void Renderer::clearRenderPasses() {
 	_passes.clear();
 }
 
+void Renderer::submitLine(const glm::vec2 &start, const glm::vec2 &end, const glm::vec4 &color) {
+	LineVertex v1;
+	v1.pos = {start.x, start.y, 0.f};
+	v1.color = color;
+	LineVertex v2;
+	v2.pos = {end.x, end.y, 0.f};
+	v2.color = color;
+	auto index = _lineBatch.vertices.size();
+	_lineBatch.vertices.push_back(v1);
+	_lineBatch.vertices.push_back(v2);
+	_lineBatch.indices.push_back(index);
+	_lineBatch.indices.push_back(index + 1);
+}
+
 void Renderer::submitQuad(const glm::vec2 &pos, const glm::vec2 &size, const glm::vec4 &uvRect, const glm::vec4 &color, int textureId) {
 	// assumption: pos is the bottom left of the quad
 	// uvrect gives: x, y = top left point in uv coords, z, w = size in uv coords
@@ -215,13 +241,17 @@ void Renderer::submitQuad(const glm::vec2 &pos, const glm::vec2 &size, const glm
 }
 
 
-void Renderer::registerTexture(const std::string &path) {
+size_t Renderer::registerTexture(const std::string& path) {
 	assert(_textures.size() < MAX_TEXTURE_SLOTS && "Too many textures!");
 
-	Tex tex;
-	tex.loadFromFile(path);
-	_textures.push_back(std::move(tex));
-
+	auto it = _textureSlotCache.find(path);
+	if (it != _textureSlotCache.end()) {
+		return it->second;
+	}
+	auto tex = _game.assetManager().get<Tex>(path);
+	_textureSlotCache[path] = _textures.size();
+	_textures.push_back(tex);
+	return _textures.size() - 1;
 }
 
 void Renderer::clear() {

@@ -14,6 +14,8 @@ public:
 
 class TestRoomFactory : public RoomFactory {
 public:
+	using RoomFactory::RoomFactory;
+
 	std::unique_ptr<Room> createRoom(Renderer&) override {
 		return std::make_unique<DoNothingRoom>();
 	}
@@ -22,7 +24,7 @@ public:
 
 int main() {
 	Game g({320, 200}, {320, 200}, "Hello from Monkey!");
-	g.setRoomFactory(std::make_unique<TestRoomFactory>());
+	g.setRoomFactory(std::make_unique<TestRoomFactory>(g));
 	// need at least one pass, or render won't be called!
 	g.addRenderPass(RenderPass(320, 200, 1));
 	g.init();

@@ -26,10 +26,11 @@ find_package(glfw3 REQUIRED)
 #find_package(PNG REQUIRED)
 find_package(yaml-cpp REQUIRED)
 
+
 # ----------------------------------------------------
 # 1️⃣ Build the C++ core library (engine only)
 # ----------------------------------------------------
-file(GLOB ENGINE_SOURCES CONFIGURE_DEPENDS core/src/*.cpp)
+file(GLOB ENGINE_SOURCES CONFIGURE_DEPENDS core/src/*.cpp core/src/math/*.cpp core/src/renderables/*.cpp)
 
 add_library(monkey_core STATIC ${ENGINE_SOURCES})
 
@@ -55,3 +56,13 @@ foreach(demo ${DEMO_SOURCES})
             PRIVATE monkey_core
     )
 endforeach()
+
+# ----------------------------------------------------
+# 2️⃣ Test
+# ----------------------------------------------------
+enable_testing()
+add_executable(unittest unittest/main.cpp)
+target_link_libraries(unittest PRIVATE monkey_core Catch2::Catch2WithMain)
+include(CTest)
+include(Catch)
+catch_discover_tests(unittest)

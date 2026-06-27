@@ -1,0 +1,498 @@
+animations:
+  0:
+    1:
+      current: 0
+      start: 0
+      end: 3
+      frame: 0
+    2:
+      current: 4
+      start: 4
+      end: 5
+      frame: 0
+  1:
+    1:
+      current: 0
+      start: 0
+      end: 3
+      frame: 1
+    2:
+      current: 6
+      start: 6
+      end: 9
+      frame: 1
+  2:
+    1:
+      current: 10
+      start: 10
+      end: 13
+      frame: 2
+    2:
+      current: 2
+      start: 2
+      end: 2
+      frame: 2
+    5:
+      current: 6
+      start: 6
+      end: 9
+      frame: 2
+    6:
+      current: 14
+      start: 14
+      end: 17
+      frame: 2
+  3:
+    1:
+      current: 18
+      start: 18
+      end: 21
+      frame: 3
+    2:
+      current: 3
+      start: 3
+      end: 3
+      frame: 3
+    5:
+      current: 6
+      start: 6
+      end: 9
+      frame: 3
+    6:
+      current: 14
+      start: 14
+      end: 17
+      frame: 3
+  4:
+    1:
+      current: 4
+      start: 4
+      end: 4
+      frame: 4
+    2:
+      current: 1
+      start: 1
+      end: 1
+      frame: 4
+  5:
+    1:
+      current: 4
+      start: 4
+      end: 4
+      frame: 5
+    2:
+      current: 1
+      start: 1
+      end: 1
+      frame: 5
+  6:
+    1:
+      current: 22
+      start: 22
+      end: 22
+      frame: 6
+    2:
+      current: 2
+      start: 2
+      end: 2
+      frame: 6
+    5:
+      current: 4
+      start: 4
+      end: 4
+      frame: 6
+    6:
+      current: 4
+      start: 4
+      end: 4
+      frame: 6
+  7:
+    1:
+      current: 22
+      start: 22
+      end: 22
+      frame: 7
+    2:
+      current: 3
+      start: 3
+      end: 3
+      frame: 7
+    5:
+      current: 4
+      start: 4
+      end: 4
+      frame: 7
+    6:
+      current: 4
+      start: 4
+      end: 4
+      frame: 7
+  8:
+    3:
+      current: 4
+      start: 4
+      end: 4
+      frame: 8
+  9:
+    3:
+      current: 4
+      start: 4
+      end: 4
+      frame: 9
+  10:
+    3:
+      current: 0
+      start: 0
+      end: 0
+      frame: 10
+  11:
+    3:
+      current: 1
+      start: 1
+      end: 1
+      frame: 11
+  12:
+    4:
+      current: 2
+      start: 2
+      end: 2
+      frame: 12
+  13:
+    4:
+      current: 2
+      start: 2
+      end: 2
+      frame: 13
+  14:
+    4:
+      current: 4
+      start: 4
+      end: 4
+      frame: 14
+  15: {}
+  16:
+    4:
+      current: 1
+      start: 1
+      end: 1
+      frame: 16
+  17:
+    4:
+      current: 1
+      start: 1
+      end: 1
+      frame: 17
+  18:
+    4:
+      current: 0
+      start: 0
+      end: 0
+      frame: 18
+  19: {}
+  20:
+    4:
+      current: 23
+      start: 23
+      end: 26
+      frame: 20
+  21:
+    4:
+      current: 23
+      start: 23
+      end: 26
+      frame: 21
+  22:
+    4:
+      current: 27
+      start: 27
+      end: 30
+      frame: 22
+frames:
+  '1_0':
+    width: 12
+    height: 31
+    relx: 72
+    rely: 69
+    movex: 0
+    movey: 0
+    x: 64
+    y: 64
+  '1_1':
+    width: 24
+    height: 27
+    relx: 64
+    rely: 73
+    movex: 0
+    movey: 0
+    x: 0
+    y: 0
+  '1_2':
+    width: 22
+    height: 25
+    relx: 64
+    rely: 75
+    movex: 0
+    movey: -1
+    x: 24
+    y: 24
+  '1_3':
+    width: 20
+    height: 26
+    relx: 64
+    rely: 74
+    movex: 0
+    movey: 0
+    x: 44
+    y: 44
+  '1_4':
+    width: 20
+    height: 26
+    relx: 70
+    rely: 74
+    movex: 0
+    movey: -1
+    x: 44
+    y: 44
+  '1_5':
+    width: 22
+    height: 25
+    relx: 64
+    rely: 75
+    movex: 0
+    movey: 0
+    x: 24
+    y: 24
+  '1_6':
+    width: 18
+    height: 24
+    relx: 68
+    rely: 75
+    movex: 0
+    movey: -1
+    x: 46
+    y: 46
+  '1_7':
+    width: 14
+    height: 25
+    relx: 70
+    rely: 75
+    movex: 0
+    movey: 0
+    x: 82
+    y: 82
+  '1_8':
+    width: 18
+    height: 24
+    relx: 64
+    rely: 75
+    movex: 0
+    movey: -1
+    x: 46
+    y: 46
+  '1_9':
+    width: 14
+    height: 25
+    relx: 66
+    rely: 75
+    movex: 0
+    movey: 0
+    x: 76
+    y: 76
+  '1_10':
+    width: 18
+    height: 24
+    relx: 68
+    rely: 77
+    movex: 0
+    movey: -1
+    x: 64
+    y: 64
+  '1_11':
+    width: 14
+    height: 25
+    relx: 70
+    rely: 77
+    movex: 0
+    movey: 0
+    x: 0
+    y: 0
+  '1_12':
+    width: 18
+    height: 24
+    relx: 64
+    rely: 77
+    movex: 0
+    movey: -1
+    x: 82
+    y: 82
+  '1_13':
+    width: 14
+    height: 25
+    relx: 66
+    rely: 77
+    movex: 0
+    movey: 0
+    x: 0
+    y: 0
+  '2_0':
+    width: 22
+    height: 22
+    relx: 66
+    rely: 53
+    movex: 0
+    movey: 0
+    x: 64
+    y: 64
+  '2_1':
+    width: 18
+    height: 22
+    relx: 70
+    rely: 53
+    movex: 0
+    movey: 0
+    x: 64
+    y: 64
+  '2_2':
+    width: 12
+    height: 23
+    relx: 70
+    rely: 53
+    movex: 0
+    movey: 0
+    x: 90
+    y: 90
+  '2_3':
+    width: 10
+    height: 24
+    relx: 70
+    rely: 53
+    movex: 0
+    movey: 0
+    x: 0
+    y: 0
+  '2_4':
+    width: 10
+    height: 24
+    relx: 70
+    rely: 53
+    movex: 0
+    movey: 0
+    x: 0
+    y: 0
+  '3_0':
+    width: 24
+    height: 28
+    relx: 64
+    rely: 27
+    movex: 0
+    movey: 0
+    x: 0
+    y: 0
+  '3_1':
+    width: 22
+    height: 28
+    relx: 64
+    rely: 26
+    movex: 0
+    movey: 0
+    x: 0
+    y: 0
+  '3_2':
+    width: 22
+    height: 28
+    relx: 64
+    rely: 26
+    movex: 0
+    movey: 0
+    x: 22
+    y: 22
+  '4_0':
+    width: 6
+    height: 8
+    relx: 72
+    rely: 45
+    movex: 0
+    movey: 0
+    x: 96
+    y: 96
+  '4_1':
+    width: 10
+    height: 4
+    relx: 70
+    rely: 45
+    movex: 0
+    movey: 0
+    x: 64
+    y: 64
+  '4_2':
+    width: 6
+    height: 2
+    relx: 80
+    rely: 46
+    movex: 0
+    movey: 0
+    x: 76
+    y: 76
+  '4_3':
+    width: 8
+    height: 6
+    relx: 78
+    rely: 47
+    movex: 0
+    movey: 0
+    x: 94
+    y: 94
+  '5_0':
+    width: 4
+    height: 22
+    relx: 66
+    rely: 54
+    movex: 0
+    movey: 0
+    x: 86
+    y: 86
+  '5_1':
+    width: 4
+    height: 18
+    relx: 66
+    rely: 54
+    movex: 0
+    movey: 0
+    x: 8
+    y: 8
+  '5_2':
+    width: 4
+    height: 20
+    relx: 66
+    rely: 54
+    movex: 0
+    movey: 0
+    x: 0
+    y: 0
+  '6_0':
+    width: 4
+    height: 22
+    relx: 80
+    rely: 54
+    movex: 0
+    movey: 0
+    x: 90
+    y: 90
+  '6_1':
+    width: 4
+    height: 18
+    relx: 80
+    rely: 54
+    movex: 0
+    movey: 0
+    x: 12
+    y: 12
+  '6_2':
+    width: 4
+    height: 20
+    relx: 80
+    rely: 54
+    movex: 0
+    movey: 0
+    x: 4
+    y: 4

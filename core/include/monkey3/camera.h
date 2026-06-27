@@ -15,6 +15,20 @@ public:
 
 	void setPosition(glm::vec3 eye, glm::vec3 dir, glm::vec3 up);
 
+	void setPosition(glm::vec2 pos);
+	// Bounds ------------------------------------------------------------
+
+	void setXBounds(float min, float max);
+	void setYBounds(float min, float max);
+	void setZBounds(float min, float max);
+
+	void clearXBounds();
+	void clearYBounds();
+	void clearZBounds();
+
+	void clearBounds();
+
+	glm::vec3 getEye() const;
 protected:
 	glm::vec3 clampPosition(const glm::vec3& pos);
 	void updateViewMatrix();
@@ -33,6 +47,12 @@ protected:
 	std::optional<glm::vec2> _zBounds;
 };
 
+
+inline glm::vec3 Camera::getEye() const {
+	return _eye;
+
+}
+
 class OrthoCamera : public Camera {
 public:
 	OrthoCamera(float width, float height, float near, float far);
@@ -42,3 +62,7 @@ public:
 private:
 	glm::vec2 _orthoSize;
 };
+
+inline glm::vec2 OrthoCamera::getSize() const {
+	return _orthoSize;
+}
