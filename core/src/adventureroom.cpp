@@ -22,6 +22,8 @@ AdventureRoom::AdventureRoom(Game &game, glm::ivec2 size, glm::ivec4 gameView, g
 	uiPass.viewport = _uiView;
 	uiPass.layerMask = 2;
 	_game.addRenderPass(std::move(uiPass));
+
+	_hotspotManager = std::make_unique<HotSpotManager>();
 }
 
 void AdventureRoom::render(const RenderContext& context) {

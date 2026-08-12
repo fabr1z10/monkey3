@@ -1,0 +1,27 @@
+sprites:
+  mario:
+    sheet: "smb1.png"
+    frames:
+      idle:
+        quad: [0, 0, 16, 16]   # each quad is defined as [x, y, width, height] in pixels
+        anchor: [8, 0]       # anchor (0, 0) means node position matches the bottom left of the quad
+        # size --> size is optional, if size not specified matches the quad size in pixels
+        # flip_x --> default False
+      walk_1:
+        quad: [16, 0, 16, 16]
+        anchor: [8, 0]
+      walk_2:
+        quad: [32, 0, 16, 16]
+        anchor: [8, 0]
+      walk_3:
+        quad: [48, 0, 16, 16]
+        anchor: [8, 0]
+    animations:
+      walk:
+        frames:
+          - {"id": "walk_1", "cycles": 20}
+          - {"id": "walk_2", "cycles": 20}
+          - {"id": "walk_3", "cycles": 20}
+      idle:
+        frames:
+          - {"id": "idle", "cycles": 20}

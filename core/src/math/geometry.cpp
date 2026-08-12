@@ -69,17 +69,19 @@ bool pointInSimplePolygon(const glm::vec2& p,
 }
 
 bool pointInPolygon(const glm::vec2& p,
-					const Polygon& poly)
+					const Area& area)
 {
 	// 1. Must be inside outer boundary
-	if (!pointInSimplePolygon(p, poly.outer))
+	if (!area.outer.contains(p)) {
 		return false;
+	}
 
 	// 2. Must NOT be inside any hole
-	for (const auto& hole : poly.holes)
+	for (const auto& hole : area.holes)
 	{
-		if (pointInSimplePolygon(p, hole))
+		if (hole.contains(p)) {
 			return false;
+		}
 	}
 
 	return true;
@@ -90,16 +92,16 @@ bool pointInPolygon(const glm::vec2& p,
 bool segmentIntersectsPolygon(
 		glm::vec2 a,
 		glm::vec2 b,
-		const Polygon& poly)
+		const Area& poly)
 {
 	// 1. check outer boundary
-	if (segmentIntersectsPolygonVec(a, b, poly.outer))
+	if (poly.outer.segmentIntersects(a, b))
 		return true;
 
 	// 2. check holes (IMPORTANT)
 	for (const auto& hole : poly.holes)
 	{
-		if (segmentIntersectsPolygonVec(a, b, hole))
+		if (hole.segmentIntersects(a, b))
 			return true;
 	}
 

@@ -1,0 +1,36 @@
+room_size: [960, 128]
+game_view: [0, 56, 320, 128]
+ui_view: [0, 0, 320, 200]
+walk_area:
+  areas:
+    - outer: [
+        [0, 0],
+        [100, 0],
+        [100, 50],
+        [-20, 50]
+      ]
+nodes:
+  - renderable:
+      type: "quad"
+      image: "data/images/01.png"
+  - components:
+      - type: "hotspot"
+
+  - renderable:
+      type: "point"
+      position: [10, 10]
+  - renderable:
+      type: "point"
+      position: [72, 35]
+  - renderable:
+      type: "polygon"
+      vertices: [[0, 0], [100, 0], [100, 100], [50, 50], [0, 100]]
+  - renderable:
+      type: "ellipse"
+      rx: 20
+      ry: 10
+  - renderable:
+      type: "ellipse"
+      rx: 50
+      ry: 50
+    position: [80, 60]

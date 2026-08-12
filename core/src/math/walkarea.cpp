@@ -7,7 +7,7 @@
 
 int WalkArea::findArea(glm::vec2 P) const {
 	for (const auto& area : _areas) {
-		if (pointInPolygon(P, area.shape))
+		if (pointInPolygon(P, area))
 			return area.id;
 	}
 	return -1;
@@ -17,15 +17,16 @@ bool WalkArea::isBlocked(glm::vec2 A, glm::vec2 B) const {
 	for (const auto& obs : _obstacles) {
 		if (!obs.active) continue;
 
-		if (segmentIntersectsPolygon(A, B, obs.shape))
+		if (obs.shape.segmentIntersects(A, B))
 			return true;
 	}
 	return false;
 }
 
-int WalkArea::addArea(const Polygon &poly) {
+int WalkArea::addArea(Area &area) {
 	int id = (int)_areas.size();
-	_areas.push_back({id, poly, {}});
+	area.id = id;
+	_areas.push_back(area);
 	return id;
 }
 
@@ -50,7 +51,7 @@ void WalkArea::setPortalEnabled(int id, bool enabled) {
 	_portals[id].enabled = enabled;
 }
 
-int WalkArea::addObstacle(const Polygon& poly) {
+int WalkArea::addObstacle(const shapes::Polygon& poly) {
 	int id = (int)_obstacles.size();
 	_obstacles.push_back({id, poly, true});
 	return id;
@@ -177,10 +178,10 @@ std::vector<glm::vec2> WalkArea::findPath(glm::vec2 start, glm::vec2 end) const 
 
 void WalkArea::render(Renderer & r, glm::mat4 worldTransform) {
 
-	for (const auto& a : _areas) {
-		renderPoly(r, a.shape.outer, true, glm::vec4(1.f), worldTransform);
-		for (const auto& hole : a.shape.holes) {
-			renderPoly(r, hole, true, glm::vec4(1.f), worldTransform);
+	for (auto& a : _areas) {
+		a.outer.render(r, glm::mat4(1.f));
+		for (auto& hole : a.holes) {
+			hole.render(r, glm::mat4(1.f));
 		}
 	}
 }

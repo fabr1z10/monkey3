@@ -3,7 +3,12 @@
 #include "glm/glm.hpp"
 #include "monkey3/renderer.h"
 #include "monkey3/renderable.h"
+#include "component.h"
 #include <memory>
+
+
+class Room;
+
 
 class Node {
 public:
@@ -29,7 +34,13 @@ public:
 
 	void addChild(std::unique_ptr<Node> child);
 
+	void addComponent(std::unique_ptr<Component> component);
+
 	void addRenderable(std::unique_ptr<Renderable> renderable);
+
+	Room* getRoom() const;
+
+	void setRoom(Room* room);
 protected:
 	void updateLocalTransform();
 	void updateWorldTransform();
@@ -44,6 +55,8 @@ private:
 
 	std::vector<std::unique_ptr<Node>> _children;
 
+	std::vector<std::unique_ptr<Component>> _components;
+
 	Node* _parent = nullptr;
 
 	glm::vec3 _position{0.f}; // z = layer
@@ -55,6 +68,10 @@ private:
 	bool _dirty = true;		// true if world matrix needs to be recomputed
 
 	std::unique_ptr<Renderable> _renderable;
+
+	// the room node belongs to (if any)
+	Room* _room = nullptr;
+
 };
 
 inline void Node::setLayerMask(uint32_t layerMask) {
@@ -65,6 +82,11 @@ inline uint32_t Node::getLayerMask() const {
 	return _layerMask;
 }
 
+inline Room *Node::getRoom() const {
 
+	return _room;
+}
 
-
+inline void Node::setRoom(Room *room) {
+	_room = room;
+}

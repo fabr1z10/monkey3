@@ -3,6 +3,7 @@
 
 Room::Room(Game& game) : _game(game), _renderer(game.renderer()) {
      _root = std::make_unique<Node>();
+	 _root->setRoom(this);
 }
 
 

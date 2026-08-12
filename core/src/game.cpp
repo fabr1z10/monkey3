@@ -1,4 +1,5 @@
 #include "monkey3/game.h"
+#include "monkey3/yaml_extension.h"
 #include <stdexcept>
 #include <iostream>
 #include <cmath>
@@ -9,6 +10,18 @@ Game::Game(const glm::ivec2& deviceSize, const glm::ivec2& windowSize, const std
 		throw std::invalid_argument("deviceSize.y cannot be zero");
 	}
 	_deviceAspectRatio = static_cast<float>(deviceSize.x) / deviceSize.y;
+}
+
+std::unique_ptr<Game> Game::load(const std::string &file) {
+	std::filesystem::path path(file);
+	auto gameFile = YAML::LoadFile(path / "game.yaml");
+	auto deviceSize = gameFile["device_size"].as<glm::ivec2>();
+	auto windowSize = gameFile["window_size"].as<glm::ivec2>(deviceSize);
+	auto title = gameFile["title"].as<std::string>("Unknown");
+	auto game =std::make_unique<Game>(deviceSize, deviceSize, title);
+	game->_homeDir = path;
+	game->assetManager().setAssetFile(path / "data.yaml");
+	return std::move(game);
 }
 
 Game::~Game() {

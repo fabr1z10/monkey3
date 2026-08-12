@@ -28,11 +28,11 @@ public:
 
 	int addPortal(int a, int b, glm::vec2 P0, glm::vec2 P1);
 
-	int addArea(const Polygon& poly);
+	int addArea(Area& poly);
 
 	void setPortalEnabled(int id, bool enabled);
 
-	int addObstacle(const Polygon& poly) ;
+	int addObstacle(const shapes::Polygon& poly) ;
 
 	void removeObstacle(int id) ;
 

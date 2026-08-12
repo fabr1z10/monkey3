@@ -2,7 +2,8 @@
 
 #include <yaml-cpp/yaml.h>
 #include <glm/glm.hpp>
-#include <monkey3/math/walkarea_classes.h>
+#include <monkey3/shapes/polygon.h>
+#include "monkey3/utils.h"
 
 template<typename T>
 T require(const YAML::Node& node, const std::string& key)
@@ -85,6 +86,8 @@ namespace YAML {
 		}
 	};
 
+
+
 	template <>
 	struct convert<glm::ivec4> {
 		static Node encode(const glm::ivec4 &rhs) {
@@ -112,32 +115,41 @@ namespace YAML {
 		}
 	};
 
-	template <>
-	struct convert<Polygon> {
-		static Node encode(const Polygon& rhs) {
+	template<>
+	struct convert<Color>
+	{
+		static Node encode(const Color& c)
+		{
 			Node node;
-			node["outer"] = rhs.outer;
-			node["holes"] = rhs.holes;
+			node.push_back(c.r);
+			node.push_back(c.g);
+			node.push_back(c.b);
+			if (c.a != 255)
+				node.push_back(c.a);
 			return node;
 		}
 
-		static bool decode(const Node& node, Polygon& poly) {
-			if (!node.IsMap()) {
-				return false;
+		static bool decode(const Node& node, Color& c)
+		{
+			if (node.IsSequence())
+			{
+				if (node.size() != 3 && node.size() != 4)
+					return false;
+
+				c.r = node[0].as<uint8_t>();
+				c.g = node[1].as<uint8_t>();
+				c.b = node[2].as<uint8_t>();
+				c.a = node.size() == 4 ? node[3].as<uint8_t>() : 255;
+
+				return true;
 			}
-			try {
-				poly.outer = node["outer"].as<std::vector<glm::vec2>>();
-				if (node["holes"]) {
-					for (const auto& hole : node["holes"]) {
-						poly.holes.push_back(hole.as<std::vector<glm::vec2>>());
-					}
-				}
+
+			if (node.IsScalar())
+			{
+				return parseHexColor(node.as<std::string>(), c);
 			}
-			catch (const YAML::Exception& e) {
-				return false;
-			}
-			return true;
+
+			return false;
 		}
 	};
-
 }

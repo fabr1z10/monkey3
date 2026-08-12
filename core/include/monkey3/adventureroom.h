@@ -3,7 +3,7 @@
 #include "monkey3/room.h"
 #include "monkey3/math/walkarea.h"
 #include "monkey3/mouselistener.h"
-
+#include "monkey3/hotspotmanager.h"
 
 class AdventureRoom : public Room, public MouseListener {
 public:
@@ -18,11 +18,13 @@ public:
 	void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) override;
 
 	void setCameraPosition(int x, int y);
+
+	HotSpotManager* getHotSpotManager();
 private:
 	std::unique_ptr<WalkArea> _walkArea;
+	std::unique_ptr<HotSpotManager> _hotspotManager;
 	glm::ivec2 _size;
 	glm::ivec4 _gameView;
 	glm::ivec4 _uiView;
-
 
 };

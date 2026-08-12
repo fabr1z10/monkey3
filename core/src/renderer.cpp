@@ -22,7 +22,7 @@ glm::vec2 RenderPass::getWorldCoordinates(glm::vec2 deviceCoordinates) const {
 
 void Renderer::init(glm::ivec2 deviceSize) {
 
-	_quadShader.emplace("assets/shaders/quad.vert", "assets/shaders/quad.frag");
+	_quadShader.emplace("shaders/quad.vert", "shaders/quad.frag");
 	_quadShader->use();
 	int samplers[16];
 	for (int i = 0; i < 16; i++)
@@ -31,8 +31,8 @@ void Renderer::init(glm::ivec2 deviceSize) {
 	GLint loc = glGetUniformLocation(_quadShader->id(), "uTextures");
 	glUniform1iv(loc, 16, samplers);
 
-	_lineShader.emplace("assets/shaders/line.vert", "assets/shaders/line.frag");
-	_screenShader.emplace("assets/shaders/screen.vert", "assets/shaders/screen.frag");
+	_lineShader.emplace("shaders/line.vert", "shaders/line.frag");
+	_screenShader.emplace("shaders/screen.vert", "shaders/screen.frag");
 	_screenShader->use();
 	_uSceneLoc = glGetUniformLocation(_screenShader->id(), "uScene");
 	glUniform1i(_uSceneLoc, 0);

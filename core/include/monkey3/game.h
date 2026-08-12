@@ -14,6 +14,13 @@ class Game {
 public:
 	Game(const glm::ivec2& deviceSize, const glm::ivec2& windowSize, const std::string& title);
 
+	/**
+	 * Loads a game from a given folder
+	 * @param file
+	 * @return
+	 */
+	static std::unique_ptr<Game> load(const std::string& file);
+
 	virtual ~Game();
 
 	Game(const Game&) = delete;
@@ -51,6 +58,7 @@ public:
 
 	bool isInDeviceCoordinates(glm::vec2 s) const;
 
+	std::filesystem::path getHomeDir() const;
 private:
 	static void windowResizeCallback(GLFWwindow* win, int width, int height);
 
@@ -81,6 +89,7 @@ private:
 
 	std::unordered_set<MouseListener*> _mouseListeners;
 
+	std::filesystem::path _homeDir;
 };
 
 inline AssetManager& Game::assetManager() {
@@ -89,4 +98,8 @@ inline AssetManager& Game::assetManager() {
 
 inline const AssetManager& Game::assetManager() const {
 	return _assetManager;
+}
+
+inline std::filesystem::path Game::getHomeDir() const {
+	return _homeDir;
 }

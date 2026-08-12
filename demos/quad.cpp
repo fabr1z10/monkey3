@@ -2,33 +2,34 @@
 #include "monkey3/renderables/scumm_actor.h"
 #include "monkey3/renderables/lines.h"
 #include "monkey3/xmlroomfactory.h"
-class TestRoomFactory : public RoomFactory {
-public:
-	using RoomFactory::RoomFactory;
-
-    std::unique_ptr<Room> createRoom(Renderer& renderer) override {
-        auto room = std::make_unique<Room>();
-		//_game.assetManager().get<ScummActorInfo>( "assets/actors/dave.yamlload.cpp");
-
-		//exit(2);
-
-        size_t n = renderer.registerTexture("assets/images/kq1.png");
-
-        auto node = std::make_unique<Node>();
-        node->addRenderable(std::make_unique<QuadRenderable>(n, glm::vec4(30/1024.,1/1024.,28/1024.,40/1024.), glm::vec2(28,40)));
-        room->getRoot()->addChild(std::move(node));
-
-        return room;
-    }
-};
+//class TestRoomFactory : public RoomFactory {
+//public:
+//	using RoomFactory::RoomFactory;
+//
+//    std::unique_ptr<Room> createRoom(Renderer& renderer) override {
+//        auto room = std::make_unique<Room>();
+//		//_game.assetManager().get<ScummActorInfo>( "data/actors/dave.yamlload.cpp");
+//
+//		//exit(2);
+//
+//        size_t n = renderer.registerTexture("data/images/kq1.png");
+//
+//        auto node = std::make_unique<Node>();
+//        node->addRenderable(std::make_unique<QuadRenderable>(n, glm::vec4(30/1024.,1/1024.,28/1024.,40/1024.), glm::vec2(28,40)));
+//        room->getRoot()->addChild(std::move(node));
+//
+//        return room;
+//    }
+//};
 
 class TestActor : public RoomFactory {
 public:
 	using RoomFactory::RoomFactory;
 
-	std::unique_ptr<Room> createRoom(Renderer& renderer) override {
-		auto room = std::make_unique<Room>();
-		auto scummActorInfo = _game.assetManager().get<ScummActorInfo>( "assets/actors/dave.yamlload.cpp");
+	std::unique_ptr<Room> createRoom() override {
+		auto room = std::make_unique<Room>(_game);
+		_game.assetManager().setAssetFile("/home/fabrizio/monkey3/data/test_actor/dave.yaml");
+		auto scummActorInfo = _game.assetManager().get<ScummActorInfo>("dave");
 		auto node = std::make_unique<Node>();
 		auto actor = std::make_unique<ScummActor>(scummActorInfo);
 		node->setPosition(glm::vec3(0, 0, 0));

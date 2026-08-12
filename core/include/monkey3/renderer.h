@@ -71,6 +71,8 @@ public:
 	void clearRenderPasses();
 
 	size_t registerTexture(const std::string& path);
+
+	Game& getGame() { return _game; }
 private:
 	template<typename T>
 	void draw(Batch<T>& batch, GLenum mode) {

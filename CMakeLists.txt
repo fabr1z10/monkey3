@@ -30,7 +30,8 @@ find_package(yaml-cpp REQUIRED)
 # ----------------------------------------------------
 # 1️⃣ Build the C++ core library (engine only)
 # ----------------------------------------------------
-file(GLOB ENGINE_SOURCES CONFIGURE_DEPENDS core/src/*.cpp core/src/math/*.cpp core/src/renderables/*.cpp)
+file(GLOB ENGINE_SOURCES CONFIGURE_DEPENDS core/src/*.cpp core/src/math/*.cpp
+        core/src/renderables/*.cpp core/src/components/*.cpp core/src/shapes/*.cpp)
 
 add_library(monkey_core STATIC ${ENGINE_SOURCES})
 
@@ -39,7 +40,7 @@ target_include_directories(monkey_core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/core/i
 
 target_link_libraries(monkey_core PUBLIC ${OPENGL_LIBRARIES} ${GLEW_LIBRARIES} glfw ${PNG_LIBRARIES} ${YAML_CPP_LIBRARIES})
 
-file(COPY ${CMAKE_SOURCE_DIR}/assets DESTINATION ${CMAKE_BINARY_DIR})
+file(COPY ${CMAKE_SOURCE_DIR}/shaders DESTINATION ${CMAKE_BINARY_DIR})
 
 # ----------------------------------------------------
 # 2️⃣ Demos

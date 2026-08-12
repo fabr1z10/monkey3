@@ -1,7 +1,8 @@
 #include "monkey3/node.h"
 #include "glm/gtc/matrix_transform.hpp"
 
-Node::Node() {}
+Node::Node() : _position(0.f), _rotation(0.f), _scale(1.f, 1.f), _dirty(true) {
+}
 
 void Node::setPosition(const glm::vec3& pos) {
 	_position = pos;
@@ -81,7 +82,7 @@ glm::mat4 Node::getWorldTransform() {
 void Node::addChild(std::unique_ptr<Node> child) {
 	child->_parent = this;
 	child->markDirty();
-
+	child->_room = _room;
 	_children.push_back(std::move(child));
 }
 
@@ -93,13 +94,26 @@ void Node::render(Renderer &r, const RenderContext& ctx) {
 
 	bool visible = (_layerMask & ctx.layerMask) != 0;
 
+
+	glm::mat4 worldTransform = getWorldTransform();
 	if (visible && _renderable) {
-		_renderable->render(r, getWorldTransform());
+		_renderable->render(r, worldTransform);
 	}
+
+	for (auto& c : _components) {
+		c->render(r, worldTransform);
+	}
+
+
+
 		;// TO DO CALL RENDERABLE->REBDER _renderable->render(r, getWorldTransform());
 
 	for (auto& child : _children)
 		child->render(r, ctx);
 
 
+}
+
+void Node::addComponent(std::unique_ptr<Component> component) {
+	_components.push_back(std::move(component));
 }

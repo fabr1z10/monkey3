@@ -35,10 +35,10 @@ bool segmentsIntersect(const glm::vec2& p1, const glm::vec2& p2, const glm::vec2
 
 bool segmentIntersectsLoop(const glm::vec2& p1, const glm::vec2& p2, const std::vector<glm::vec2>& loop);
 
-bool pointInPolygon(const glm::vec2&, const Polygon&);
+bool pointInPolygon(const glm::vec2&, const Area&);
 
 
-bool segmentIntersectsPolygon(glm::vec2 A, glm::vec2 B, const Polygon& poly);
+bool segmentIntersectsPolygon(glm::vec2 A, glm::vec2 B, const Area& poly);
 
 /**
  * Tells whether P lies on segment AB

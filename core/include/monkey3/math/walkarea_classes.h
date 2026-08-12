@@ -2,18 +2,20 @@
 
 #include "glm/glm.hpp"
 #include <vector>
+#include <monkey3/shapes/polygon.h>
 
 
-
-struct Polygon {
-	std::vector<glm::vec2> outer;
-
-	std::vector<std::vector<glm::vec2>> holes;
-};
+//struct Polygon {
+//	std::vector<glm::vec2> outer;
+//
+//	std::vector<std::vector<glm::vec2>> holes;
+//};
 
 struct Area {
+
 	int id = -1;
-	Polygon shape;
+	shapes::Polygon outer;
+	std::vector<shapes::Polygon> holes;
 	std::vector<int> portals;
 };
 
@@ -32,7 +34,7 @@ struct Portal {
 struct Obstacle {
 	int id = -1;
 
-	Polygon shape;
+	shapes::Polygon shape;
 
 	bool active = true;
 };
