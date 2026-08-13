@@ -13,7 +13,7 @@ namespace components {
 
 		void start() override;
 
-		void update(double) override {}
+		void update(float) override {}
 
 		virtual void onMouseEnter() {}
 

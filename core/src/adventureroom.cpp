@@ -52,7 +52,7 @@ void AdventureRoom::cursorPosCallback(GLFWwindow *, double x, double y) {
 	}
 
 	auto c1 = _renderer.getRenderPass(0).getWorldCoordinates(devCoords);
-	std::cout << c1.x << " " << c1.y << std::endl;
+	//std::cout << c1.x << " " << c1.y << std::endl;
 
 	// check if cursor is in game view and ui view
 	// repeat these steps for each view so ...

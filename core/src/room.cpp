@@ -6,6 +6,10 @@ Room::Room(Game& game) : _game(game), _renderer(game.renderer()) {
 	 _root->setRoom(this);
 }
 
+void Room::update(float dt) {
+    _root->update(dt);
+}
+
 
 void Room::render(const RenderContext& ctx) {
 

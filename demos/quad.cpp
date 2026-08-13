@@ -28,7 +28,9 @@ public:
 
 	std::unique_ptr<Room> createRoom() override {
 		auto room = std::make_unique<Room>(_game);
-		_game.assetManager().setAssetFile("/home/fabrizio/monkey3/data/test_actor/dave.yaml");
+		std::filesystem::path assets = PROJECT_ASSET_DIR;
+
+		_game.assetManager().setAssetFile((assets / "test_actor" / "dave.yaml").string());
 		auto scummActorInfo = _game.assetManager().get<ScummActorInfo>("dave");
 		auto node = std::make_unique<Node>();
 		auto actor = std::make_unique<ScummActor>(scummActorInfo);

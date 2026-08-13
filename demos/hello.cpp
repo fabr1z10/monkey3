@@ -2,10 +2,12 @@
 
 class DoNothingRoom : public Room {
 public:
+	using Room::Room;
+
 	void update(float) override {
 		// do nothing
 	}
-	void render(Renderer&, const RenderContext&) override {
+	void render(const RenderContext&) override {
 		glClearColor(1.f, 0.2f, 0.2f, 1.f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -16,8 +18,8 @@ class TestRoomFactory : public RoomFactory {
 public:
 	using RoomFactory::RoomFactory;
 
-	std::unique_ptr<Room> createRoom(Renderer&) override {
-		return std::make_unique<DoNothingRoom>();
+	std::unique_ptr<Room> createRoom() override {
+		return std::make_unique<DoNothingRoom>(_game);
 	}
 };
 

@@ -1,4 +1,4 @@
-#include <monkey3/hotspotmanager.h>
+#include <monkey3/services/hotspotmanager.h>
 
 HotSpotManager::HotSpotManager() : _hotspots() {
 }

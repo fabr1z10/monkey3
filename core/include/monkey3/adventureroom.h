@@ -3,7 +3,7 @@
 #include "monkey3/room.h"
 #include "monkey3/math/walkarea.h"
 #include "monkey3/mouselistener.h"
-#include "monkey3/hotspotmanager.h"
+#include "monkey3/services/hotspotmanager.h"
 
 class AdventureRoom : public Room, public MouseListener {
 public:

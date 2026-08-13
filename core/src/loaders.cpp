@@ -25,7 +25,7 @@ std::shared_ptr<SpriteInfo> Loader<SpriteInfo>::load(Game & game, const std::str
 
 	auto sheetFile = node["sheet"].as<std::string>();
 	auto sheetPath = game.assetManager().getAssetDir() / sheetFile;
-	size_t n = game.renderer().registerTexture(sheetPath);
+	size_t n = game.renderer().registerTexture(sheetPath.string());
 	info->setTexture(n);
 	auto* tex = game.renderer().getTexture(n);
 	auto texSize = glm::vec2(tex->getWidth(), tex->getHeight());
@@ -67,7 +67,7 @@ std::shared_ptr<ScummActorInfo> Loader<ScummActorInfo>::load(Game& game, const s
 	}
 	auto sheetFile = node["sheet"].as<std::string>();
 	auto sheetPath = game.assetManager().getAssetDir() / sheetFile;
-	size_t n = game.renderer().registerTexture(sheetPath);
+	size_t n = game.renderer().registerTexture(sheetPath.string());
 	auto info = std::make_shared<ScummActorInfo>();
 	info->setTexture(n);
 	info->setFrameDuration(20);

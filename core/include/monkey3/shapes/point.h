@@ -13,6 +13,8 @@ namespace shapes {
 
 		void render(Renderer &, glm::mat4 worldTransform) override;
 
+		RayCastHit raycastAxis(glm::vec3 origin, float length, Axis axis) const override;
+
 	private:
 		glm::vec2 _coords;
 	};

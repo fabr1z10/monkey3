@@ -16,6 +16,7 @@ XMLRoomFactory::XMLRoomFactory(Game &game) : RoomFactory(game) {
 	_renderableFactories["ellipse"] = readEllipse;
 	_renderableFactories["sprite"] = readSprite;
 
+	_componentFactories["player2D"] = readPlayer2D;
 	//_componentFactories["hotspot"] = readHotSpot;
 
 }
@@ -24,7 +25,7 @@ XMLRoomFactory::XMLRoomFactory(Game &game) : RoomFactory(game) {
 
 
 std::unique_ptr<Room> XMLRoomFactory::createRoom() {
-	YAML::Node node = YAML::LoadFile(_game.getHomeDir() / _filename);
+	YAML::Node node = YAML::LoadFile((_game.getHomeDir() / _filename).string());
 
 	auto room_size = require<glm::ivec2>(node, "room_size");
 
@@ -82,6 +83,16 @@ std::unique_ptr<Node> XMLRoomFactory::readNode(const YAML::Node &node) {
 			n->addRenderable(std::move(r));
 		}
 	}
+
+	for (const auto& component : node["components"]) {
+		auto c = readComponent(component);
+		if (c) {
+			n->addComponent(std::move(c));
+		}
+	}
+
+	
+
 	return std::move(n);
 }
 
@@ -90,7 +101,7 @@ std::unique_ptr<Renderable> XMLRoomFactory::readRenderable(const YAML::Node &nod
 
 	auto factoryIter = _renderableFactories.find(type);
 	if (factoryIter != _renderableFactories.end()) {
-		return factoryIter->second(_game.renderer(), node);
+		return factoryIter->second(_game, node);
 	} else {
 		throw std::runtime_error("Unknown renderable type: " + type);
 	}
@@ -101,7 +112,12 @@ std::unique_ptr<Component> XMLRoomFactory::readComponent(const YAML::Node &node)
 	auto type = require<std::string>(node, "type");
 	auto compIter = _componentFactories.find(type);
 	if (compIter != _componentFactories.end()) {
-		//return compIter->second(_game.renderer(), node);
+		return compIter->second(_game, node);
+	}
+	else {
+		std::cout << "SUCA\n";
+
+		throw std::runtime_error("Unknown component: " + type);
 	}
 	return nullptr;
 

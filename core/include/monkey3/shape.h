@@ -3,7 +3,8 @@
 #include <glm/glm.hpp>
 #include <monkey3/color.h>
 #include <monkey3/renderable.h>
-
+#include <monkey3/bounds.h>
+#include <monkey3/raycast.h>
 
 namespace shapes {
 
@@ -29,12 +30,20 @@ namespace shapes {
 
 		void setColor(Color);
 
+		Bounds getBounds() const;
+
+		virtual RayCastHit raycastAxis(glm::vec3 origin, float length, Axis axis) const = 0;
 	protected:
 		Color _color;
+		Bounds _bounds;
 	};
 
 	inline void Shape::setColor(Color color) {
 		_color = color;
+	}
+
+	inline Bounds Shape::getBounds() const {
+		return _bounds;
 	}
 
 }

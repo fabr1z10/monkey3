@@ -17,7 +17,7 @@ class Room {
 public:
 	Room(Game&);
 	virtual ~Room() = default;
-	virtual void update(float dt) {}
+	virtual void update(float dt);
 	virtual void render(const RenderContext&);
 	Node* getRoot();
 

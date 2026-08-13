@@ -9,6 +9,7 @@
 #include "monkey3/renderer.h"
 #include "monkey3/assetmanager.h"
 #include "monkey3/mouselistener.h"
+#include "monkey3/keylistener.h"
 
 class Game {
 public:
@@ -51,7 +52,11 @@ public:
 
 	void registerToMouseEvent(MouseListener*);
 
+	void registerToKeyboardEvent(KeyboardListener*);
+
 	void unregisterToMouseEvent(MouseListener*);
+
+	void unregisterToKeyboardEvent(KeyboardListener*);
 
 	// transforms screen coordinate into device coordinates
 	glm::vec2 getDeviceCoordinates(glm::vec2);
@@ -59,6 +64,8 @@ public:
 	bool isInDeviceCoordinates(glm::vec2 s) const;
 
 	std::filesystem::path getHomeDir() const;
+
+	bool isKeyDown(int) const;
 private:
 	static void windowResizeCallback(GLFWwindow* win, int width, int height);
 
@@ -88,6 +95,8 @@ private:
 	AssetManager _assetManager;
 
 	std::unordered_set<MouseListener*> _mouseListeners;
+
+	std::unordered_set<KeyboardListener*> _keyListeners;
 
 	std::filesystem::path _homeDir;
 };

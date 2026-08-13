@@ -1,0 +1,26 @@
+#include <monkey3/components/controller.h>
+
+
+Controller::Controller(const ControllerInfo& info) : Component(), _collisionStatus(0),
+	_horizontalRayCount(info.horizontalRayCount), _verticalRayCount(info.verticalRayCount) {
+	setSize(info.size);
+
+}
+
+void Controller::setSize(glm::vec3 size) {
+	_size = size;
+
+	_halfWidth = 0.5f * size.x;
+	
+	_horizontalRaySpacing = size.y / (_horizontalRayCount - 1);
+	
+	_verticalRaySpacing = size.x / (_verticalRayCount - 1);
+}
+
+void Controller::resetCollisions() {
+	_collisionStatus = 0;
+}
+
+void Controller::render(Renderer&, glm::mat4 worldTransform) {
+
+}

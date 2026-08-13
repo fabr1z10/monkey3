@@ -4,6 +4,11 @@
 Node::Node() : _position(0.f), _rotation(0.f), _scale(1.f, 1.f), _dirty(true) {
 }
 
+void Node::move(glm::vec3 delta) {
+	_position += delta;
+	updateLocalTransform();
+}
+
 void Node::setPosition(const glm::vec3& pos) {
 	_position = pos;
 	updateLocalTransform();
@@ -79,6 +84,15 @@ glm::mat4 Node::getWorldTransform() {
 	return _worldTransform;
 }
 
+glm::vec3 Node::getWorldPosition()
+{
+	if (_dirty) {
+		updateWorldTransform();
+	}
+	return glm::vec3(_worldTransform[3]);
+}
+
+
 void Node::addChild(std::unique_ptr<Node> child) {
 	child->_parent = this;
 	child->markDirty();
@@ -115,5 +129,16 @@ void Node::render(Renderer &r, const RenderContext& ctx) {
 }
 
 void Node::addComponent(std::unique_ptr<Component> component) {
+	component->setNode(this);
 	_components.push_back(std::move(component));
+}
+
+void Node::update(float dt) {
+	for (auto& component : _components) {
+		component->update(dt);
+	}
+
+	for (auto& child : _children) {
+		child->update(dt);
+	}
 }

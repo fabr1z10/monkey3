@@ -3,6 +3,7 @@
 #include "monkey3/components/controller2d.h"
 
 enum class WalkDirection {
+	NONE,
 	LEFT,
 	RIGHT,
 	UP,
@@ -11,10 +12,11 @@ enum class WalkDirection {
 
 class Walk2D : public Controller2D {
 public:
+	Walk2D(const ControllerInfo&);
 	void start() override;
-	void update(double) override;
+	void update(float) override;
 	virtual void control() = 0;
-private:
+protected:
 	float _gravity;
 	float _jumpHeight;
 	float _timeToJumpApex;

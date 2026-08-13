@@ -14,13 +14,13 @@ Game::Game(const glm::ivec2& deviceSize, const glm::ivec2& windowSize, const std
 
 std::unique_ptr<Game> Game::load(const std::string &file) {
 	std::filesystem::path path(file);
-	auto gameFile = YAML::LoadFile(path / "game.yaml");
+	auto gameFile = YAML::LoadFile((path / "game.yaml").string());
 	auto deviceSize = gameFile["device_size"].as<glm::ivec2>();
 	auto windowSize = gameFile["window_size"].as<glm::ivec2>(deviceSize);
 	auto title = gameFile["title"].as<std::string>("Unknown");
 	auto game =std::make_unique<Game>(deviceSize, deviceSize, title);
 	game->_homeDir = path;
-	game->assetManager().setAssetFile(path / "data.yaml");
+	game->assetManager().setAssetFile((path / "data.yaml").string());
 	return std::move(game);
 }
 
@@ -35,6 +35,7 @@ void Game::init() {
 	initGL();
 
 	// the 2 following calls should be done only if MOUSE is on
+	glfwSetKeyCallback(_window, keyCallback);
 	glfwSetMouseButtonCallback(_window, mouseButtonCallback);
 	glfwSetCursorPosCallback(_window, cursor_pos_callback);
 
@@ -177,8 +178,16 @@ void Game::registerToMouseEvent(MouseListener * listener) {
 	_mouseListeners.insert(listener);
 }
 
+void Game::registerToKeyboardEvent(KeyboardListener* listener) {
+	_keyListeners.insert(listener);
+}
+
 void Game::unregisterToMouseEvent(MouseListener * listener) {
 	_mouseListeners.erase(listener);
+}
+
+void Game::unregisterToKeyboardEvent(KeyboardListener* listener) {
+	_keyListeners.erase(listener);
 }
 
 //void Game::registerTexture(std::shared_ptr<Tex> tex) {
@@ -195,4 +204,8 @@ glm::vec2 Game::getDeviceCoordinates(glm::vec2 s) {
 bool Game::isInDeviceCoordinates(glm::vec2 s) const {
 
 	return s.x >= 0 && s.x <= _deviceSize.x && s.y >= 0 && s.y <= _deviceSize.y;
+}
+
+bool Game::isKeyDown(int key) const {
+	return glfwGetKey(_window, key);
 }

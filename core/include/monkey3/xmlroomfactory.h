@@ -18,9 +18,9 @@ private:
 	std::unique_ptr<Component> readComponent(const YAML::Node& node);
 	//void readRenderPasses(const YAML::Node&);
 
-	std::unordered_map<std::string, std::function<std::unique_ptr<Renderable>(Renderer&, const YAML::Node&)>> _renderableFactories;
+	std::unordered_map<std::string, std::function<std::unique_ptr<Renderable>(Game&, const YAML::Node&)>> _renderableFactories;
 
-	std::unordered_map<std::string, std::function<std::unique_ptr<Component>(const YAML::Node&)>> _componentFactories;
+	std::unordered_map<std::string, std::function<std::unique_ptr<Component>(Game&, const YAML::Node&)>> _componentFactories;
 
 	std::string _filename;
 };

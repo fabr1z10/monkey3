@@ -5,7 +5,13 @@ nodes:
   - renderable:
       type: "sprite"
       id: "mario"
-    position: [20,20]
+    components:
+      - type: "player2D"
+        maxSpeed: 300
+        accelerationTime: 0.1
+        jumpHeight: 72
+        timeToJumpApex: 0.5
+    position: [20,120]
   - renderable:
       type: "point"
       position: [10, 10]

@@ -12,7 +12,7 @@ public:
 
 	virtual void start() = 0;
 
-	virtual void update(double) = 0;
+	virtual void update(float) = 0;
 
 	virtual void setNode(Node*);
 

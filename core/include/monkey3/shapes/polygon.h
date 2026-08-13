@@ -14,6 +14,8 @@ namespace shapes {
 		void render(Renderer &, glm::mat4 worldTransform) override;
 
 		bool segmentIntersects(const glm::vec2& a, const glm::vec2& b) const;
+
+		RayCastHit raycastAxis(glm::vec3 origin, float length, Axis axis) const override;
 	private:
 		std::vector<glm::vec2> _points;
 	};

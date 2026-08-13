@@ -7,6 +7,10 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 include(FetchContent)
 
+set(PROJECT_ASSET_DIR "${CMAKE_SOURCE_DIR}/data")
+
+
+
 # ----------------------------------------------------
 # Catch2 (for tests)
 # ----------------------------------------------------
@@ -31,9 +35,10 @@ find_package(yaml-cpp REQUIRED)
 # 1️⃣ Build the C++ core library (engine only)
 # ----------------------------------------------------
 file(GLOB ENGINE_SOURCES CONFIGURE_DEPENDS core/src/*.cpp core/src/math/*.cpp
-        core/src/renderables/*.cpp core/src/components/*.cpp core/src/shapes/*.cpp)
+        core/src/renderables/*.cpp core/src/components/*.cpp core/src/shapes/*.cpp core/src/services/*.cpp)
 
 add_library(monkey_core STATIC ${ENGINE_SOURCES})
+
 
 target_include_directories(monkey_core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/core/include
         ${CMAKE_CURRENT_SOURCE_DIR}/core/external/glm ${CMAKE_CURRENT_SOURCE_DIR}/core/external/stb)
@@ -53,6 +58,9 @@ foreach(demo ${DEMO_SOURCES})
 
     add_executable(${demo_name} ${demo})
 
+    target_compile_definitions(${demo_name} PRIVATE
+        PROJECT_ASSET_DIR="${PROJECT_ASSET_DIR}"
+    )
     target_link_libraries(${demo_name}
             PRIVATE monkey_core
     )

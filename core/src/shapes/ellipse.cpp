@@ -9,6 +9,7 @@ Ellipse::Ellipse(float rx, float ry) : Shape(), _radii(rx, ry) {
 			static_cast<int>(std::ceil(std::max(rx, ry))),
 			24,
 			96);
+	_bounds = Bounds(glm::vec3(-rx, -ry, 0.f), glm::vec3(rx, ry, 0.f));
 }
 
 bool Ellipse::contains(const glm::vec2 &p) const {
@@ -44,4 +45,9 @@ void Ellipse::render(Renderer & r, glm::mat4 worldTransform) {
 
 		prev = curr;
 	}
+}
+
+RayCastHit Ellipse::raycastAxis(glm::vec3 origin, float length, Axis axis) const {
+	// TODO
+	return RayCastHit();
 }

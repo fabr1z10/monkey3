@@ -20,11 +20,15 @@ public:
 
 	glm::mat4 getWorldTransform();
 
+	glm::vec3 getWorldPosition();
+
 	void render(Renderer& r, const RenderContext&);
 
 	void setPosition(const glm::vec3& pos);
 
 	void setPosition(float x, float y, float z);
+
+	void move(glm::vec3 delta);
 
 	void setRotationDegrees(float degrees);
 
@@ -41,6 +45,8 @@ public:
 	Room* getRoom() const;
 
 	void setRoom(Room* room);
+
+	void update(float dt);
 protected:
 	void updateLocalTransform();
 	void updateWorldTransform();

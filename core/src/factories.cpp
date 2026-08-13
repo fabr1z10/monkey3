@@ -5,21 +5,22 @@
 #include <monkey3/shapes/ellipse.h>
 #include <monkey3/game.h>
 #include "monkey3/renderables/sprite.h"
+#include <monkey3/components/playerwalk2d.h>
 
-
-std::unique_ptr<Renderable> readQuad(Renderer& r, const YAML::Node& node) {
+std::unique_ptr<Renderable> readQuad(Game& game, const YAML::Node& node) {
 	auto texture = require<std::string>(node, "image");
 
 	auto coords = get<glm::ivec4>(node, "coords", glm::ivec4());
 
 	auto anchor = get<glm::vec2>(node, "anchor", {0, 0});
 
+	auto& r = game.renderer();
 	auto texId = r.registerTexture(texture);
 	const auto* tex = r.getTexture(texId);
 	return std::make_unique<Quad>(texId, tex, coords, anchor);
 }
 
-std::unique_ptr<Renderable> readPoint(Renderer& r, const YAML::Node& node) {
+std::unique_ptr<Renderable> readPoint(Game& game, const YAML::Node& node) {
 	auto position = require<glm::vec2>(node, "position");
 	auto color =  get<Color>(node, "color", Colors::White);
 	auto point = std::make_unique<shapes::Point>(position.x, position.y);
@@ -27,14 +28,14 @@ std::unique_ptr<Renderable> readPoint(Renderer& r, const YAML::Node& node) {
 	return point;
 }
 
-std::unique_ptr<Renderable> readSprite(Renderer& r, const YAML::Node& node) {
+std::unique_ptr<Renderable> readSprite(Game& game, const YAML::Node& node) {
 	auto id = node["id"].as<std::string>();
-	auto spriteInfo = r.getGame().assetManager().get<SpriteInfo>(id);
+	auto spriteInfo = game.assetManager().get<SpriteInfo>(id);
 	auto sprite = std::make_unique<Sprite>(spriteInfo);
 	return sprite;
 }
 
-std::unique_ptr<Renderable> readPolygon(Renderer& r, const YAML::Node& node) {
+std::unique_ptr<Renderable> readPolygon(Game& game, const YAML::Node& node) {
 	auto vertices = require<std::vector<glm::vec2>>(node, "vertices");
 	auto color =  get<Color>(node, "color", Colors::White);
 
@@ -43,7 +44,7 @@ std::unique_ptr<Renderable> readPolygon(Renderer& r, const YAML::Node& node) {
 	return polygon;
 }
 
-std::unique_ptr<Renderable> readEllipse(Renderer& r, const YAML::Node& node) {
+std::unique_ptr<Renderable> readEllipse(Game& game, const YAML::Node& node) {
 	auto rx = require<float>(node, "rx");
 	auto ry = require<float>(node, "ry");
 	auto color =  get<Color>(node, "color", Colors::White);
@@ -51,4 +52,14 @@ std::unique_ptr<Renderable> readEllipse(Renderer& r, const YAML::Node& node) {
 	auto ellipse = std::make_unique<shapes::Ellipse>(rx, ry);
 	ellipse->setColor(color);
 	return ellipse;
+}
+
+std::unique_ptr<Component> readPlayer2D(Game& game, const YAML::Node& node) {
+	ControllerInfo info;
+
+	info.maxSpeed = require<float>(node, "maxSpeed");
+	info.accelerationTime = require<float>(node, "accelerationTime");
+	info.jumpHeight = require<float>(node, "jumpHeight");
+	info.timeToJumpApex = require<float>(node, "timeToJumpApex");
+	return std::make_unique<PlayerWalk2D>(game, info);
 }

@@ -1,0 +1,10 @@
+{
+  "name": "monkey",
+  "version-string": "1.0.0",
+  "dependencies": [
+    "glm",
+    "glew",
+    "glfw3",
+    "yaml-cpp"
+  ]
+}
