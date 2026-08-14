@@ -133,6 +133,17 @@ void Node::addComponent(std::unique_ptr<Component> component) {
 	_components.push_back(std::move(component));
 }
 
+void Node::start() {
+	for (auto& component : _components) {
+		component->start();
+	}
+
+	for (auto& child : _children) {
+		child->start();
+	}
+
+}
+
 void Node::update(float dt) {
 	for (auto& component : _components) {
 		component->update(dt);

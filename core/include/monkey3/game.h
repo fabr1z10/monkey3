@@ -66,6 +66,8 @@ public:
 	std::filesystem::path getHomeDir() const;
 
 	bool isKeyDown(int) const;
+
+	const Room* getCurrentRoom() const;
 private:
 	static void windowResizeCallback(GLFWwindow* win, int width, int height);
 
@@ -99,6 +101,8 @@ private:
 	std::unordered_set<KeyboardListener*> _keyListeners;
 
 	std::filesystem::path _homeDir;
+
+	std::unique_ptr<Room> _room;
 };
 
 inline AssetManager& Game::assetManager() {

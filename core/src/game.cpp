@@ -148,7 +148,9 @@ void Game::keyCallback(GLFWwindow *window, int key, int scancode, int action, in
 
 void Game::run() {
 	if (!_roomFactory) throw std::runtime_error("Room factory not set");
-	auto room = _roomFactory->createRoom();
+	_room = _roomFactory->createRoom();
+
+	_room->start();
 	double last = glfwGetTime();
 	while (!glfwWindowShouldClose(_window)) {
 		// TO DO
@@ -157,13 +159,13 @@ void Game::run() {
 		float dt = now - last;
 		last = now;
 
-		room->update(dt);
+		_room->update(dt);
 
-		_renderer.render(*room);
+		_renderer.render(*_room);
 
 		glfwSwapBuffers(_window);
 	}
-
+	_room = nullptr;
 }
 
 void Game::setRoomFactory(std::unique_ptr<RoomFactory> factory) {

@@ -46,6 +46,8 @@ public:
 
 	void setRoom(Room* room);
 
+	void start();
+
 	void update(float dt);
 protected:
 	void updateLocalTransform();

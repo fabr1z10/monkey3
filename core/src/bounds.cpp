@@ -14,6 +14,11 @@ bool Bounds::isVoid() const {
     return (max.x == min.x && max.y == min.y && max.z == min.z);
 }
 
+void Bounds::translate(glm::vec3 delta) {
+    min += delta;
+    max += delta;
+}
+
 void Bounds::addPoint(glm::vec3 P) {
     min.x = std::min(min.x, P.x);
     max.x = std::max(max.x, P.x);

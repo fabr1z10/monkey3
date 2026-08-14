@@ -3,6 +3,13 @@
 
 
 #include <monkey3/math/geometry.h>
+#include <monkey3/shapes/box.h>
+
+
+#define REQUIRE_VEC3_APPROX(actual, expected) \
+    REQUIRE((actual).x == Catch::Approx((expected).x)); \
+    REQUIRE((actual).y == Catch::Approx((expected).y)); \
+    REQUIRE((actual).z == Catch::Approx((expected).z))
 
 TEST_CASE("sanity check - math works")
 {
@@ -79,5 +86,83 @@ TEST_CASE("point_in_simple_polygon") {
 	REQUIRE_FALSE(pointInSimplePolygon({0, 0}, {}));
 	REQUIRE(pointInSimplePolygon({3, 2}, {{3, 2}}));
 	REQUIRE(pointInSimplePolygon({5, 0}, {{0, 0}, {10, 0}}));
+
+}
+
+TEST_CASE("Box raycast")
+{
+	shapes::Box box(10.f, 6.f, { 0.f, 0.f });
+	shapes::Box box2(10.f, 6.f, { 5.f, 3.f });
+	SECTION("Ray hits from the left")
+	{
+		auto hit = box.raycastAxis(glm::vec3(-10.f, 3.f, 0.f), 20.f, Axis::X);
+		REQUIRE(hit.collide);
+		REQUIRE(hit.length == Catch::Approx(10.f));
+		REQUIRE_VEC3_APPROX(hit.normal, glm::vec3(-1.f, 0.f, 0.f));
+	}
+	SECTION("Ray misses from the left")
+	{
+		auto hit = box.raycastAxis(glm::vec3(-10.f, 3.f, 0.f), 9.f, Axis::X);
+		REQUIRE_FALSE(hit.collide);		
+		REQUIRE_VEC3_APPROX(hit.normal, glm::vec3());
+	}
+	SECTION("Ray hits from right")
+	{
+		auto hit = box.raycastAxis(glm::vec3(15.f, 3.f, 0.f), -40.f, Axis::X);
+		REQUIRE(hit.collide);
+		REQUIRE(hit.length == Catch::Approx(5.f));
+		REQUIRE_VEC3_APPROX(hit.normal, glm::vec3(1.f, 0.f, 0.f));
+	}
+	SECTION("Ray misses from the right")
+	{
+		auto hit = box.raycastAxis(glm::vec3(15.f, 3.f, 0.f), -4.f, Axis::X);
+		REQUIRE_FALSE(hit.collide);
+		REQUIRE_VEC3_APPROX(hit.normal, glm::vec3());
+	}
+	SECTION("Ray start from inside")
+	{
+		auto hit = box.raycastAxis(glm::vec3(5.f, 2.f, 0.f), 20.f, Axis::X);
+		REQUIRE(hit.collide);
+		REQUIRE(hit.length == Catch::Approx(0.f));
+		REQUIRE_VEC3_APPROX(hit.normal, glm::vec3());
+	}
+	SECTION("Ray hits from above")
+	{
+		auto hit = box.raycastAxis(glm::vec3(2.f, 8.f, 0.f), -3.f, Axis::Y);
+		REQUIRE(hit.collide);
+		REQUIRE(hit.length == Catch::Approx(2.f));
+		REQUIRE_VEC3_APPROX(hit.normal, glm::vec3(0.f, 1.f, 0.f));
+	}
+	SECTION("Ray misses from above")
+	{
+		auto hit = box.raycastAxis(glm::vec3(2.f, 8.f, 0.f), 3.f, Axis::Y);
+		REQUIRE_FALSE(hit.collide);
+		REQUIRE_VEC3_APPROX(hit.normal, glm::vec3());
+	}
+	SECTION("Ray hits from below")
+	{
+		auto hit = box.raycastAxis(glm::vec3(2.f, -3.f, 0.f), 5.f, Axis::Y);
+		REQUIRE(hit.collide);
+		REQUIRE(hit.length == Catch::Approx(3.f));
+		REQUIRE_VEC3_APPROX(hit.normal, glm::vec3(0.f, -1.f, 0.f));
+	}
+	SECTION("Ray misses from below")
+	{
+		auto hit = box.raycastAxis(glm::vec3(2.f, -3.f, 0.f), 1.f, Axis::Y);
+		REQUIRE_FALSE(hit.collide);
+		REQUIRE_VEC3_APPROX(hit.normal, glm::vec3());
+	}
+	SECTION("Test anchor: miss")
+	{
+		auto hit = box2.raycastAxis(glm::vec3(-10.f, 4.f, 0.f), 50.f, Axis::X);
+		REQUIRE_FALSE(hit.collide);
+		REQUIRE(hit.length == Catch::Approx(0.f));
+	}
+	SECTION("Test anchor: hit")
+	{
+		auto hit = box2.raycastAxis(glm::vec3(-10.f, -2.f, 0.f), 50.f, Axis::X);
+		REQUIRE(hit.collide);
+		REQUIRE(hit.length == Catch::Approx(5.f));
+	}
 
 }

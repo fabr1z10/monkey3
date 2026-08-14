@@ -1,5 +1,9 @@
 #include <monkey3/services/collisionengine.h>
 
+CollisionEngine::CollisionEngine(glm::vec3 size) : IService(), _size(size) {
+
+}
+
 RayCastHit CollisionEngine2D::rayCastAxis(
     glm::vec3 origin,
     float length,

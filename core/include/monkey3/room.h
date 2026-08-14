@@ -17,6 +17,7 @@ class Room {
 public:
 	Room(Game&);
 	virtual ~Room() = default;
+	virtual void start();
 	virtual void update(float dt);
 	virtual void render(const RenderContext&);
 	Node* getRoot();
@@ -38,11 +39,19 @@ public:
 	template<typename T>
 	T* getService() const
 	{
-		auto it = _services.find(typeid(T));
-		if (it == _services.end())
-			return nullptr;
+		for (const auto& [type, service] : _services)
+		{
+			if (auto* result = dynamic_cast<T*>(service.get()))
+				return result;
+		}
 
-		return static_cast<T*>(it->second.get());
+		return nullptr;
+
+		//auto it = _services.find(typeid(T));
+		//if (it == _services.end())
+		//	return nullptr;
+
+		//return static_cast<T*>(it->second.get());
 	}
 
 	template<typename T>

@@ -15,6 +15,14 @@ struct CollisionEngineCell {
 
 class CollisionEngine : public IService {
 public:
+    /**
+     * @brief Constructs a collision engine using the specified cell size.
+     *
+     * @param size The dimensions of each collision grid cell along the X, Y,
+     *             and Z axes.
+     */
+    CollisionEngine(glm::vec3 size);
+
     virtual RayCastHit rayCastAxis(glm::vec3 origin, float length, int mask, Node* node, Axis axis) = 0;
 
 protected:
@@ -25,5 +33,7 @@ protected:
 
 class CollisionEngine2D : public CollisionEngine {
 public:
+    using CollisionEngine::CollisionEngine;
+
     RayCastHit rayCastAxis(glm::vec3 origin, float length, int mask, Node* node, Axis axis) override;
 };

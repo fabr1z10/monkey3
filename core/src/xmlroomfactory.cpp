@@ -7,6 +7,7 @@
 #include <monkey3/renderables/quad.h>
 #include <monkey3/yaml_extension.h>
 #include <monkey3/factories.h>
+#include <monkey3/services/collisionengine.h>
 
 XMLRoomFactory::XMLRoomFactory(Game &game) : RoomFactory(game) {
 
@@ -17,6 +18,12 @@ XMLRoomFactory::XMLRoomFactory(Game &game) : RoomFactory(game) {
 	_renderableFactories["sprite"] = readSprite;
 
 	_componentFactories["player2D"] = readPlayer2D;
+	_componentFactories["collider"] = readCollider;
+
+
+	_roomFactories["world"] = readWorldRoom;
+	_roomFactories["adventure"] = readAdventureRoom;
+
 	//_componentFactories["hotspot"] = readHotSpot;
 
 }
@@ -27,24 +34,18 @@ XMLRoomFactory::XMLRoomFactory(Game &game) : RoomFactory(game) {
 std::unique_ptr<Room> XMLRoomFactory::createRoom() {
 	YAML::Node node = YAML::LoadFile((_game.getHomeDir() / _filename).string());
 
-	auto room_size = require<glm::ivec2>(node, "room_size");
+	auto type = require<std::string>(node, "type");
 
-	auto game_view = require<glm::ivec4>(node, "game_view");
-	auto ui_view = require<glm::ivec4>(node, "ui_view");
+	auto itRoomFactory = _roomFactories.find(type);
+	if (itRoomFactory == _roomFactories.end()) {
+		throw std::runtime_error("Unknown room type: " + type);
+	}
+	auto room = itRoomFactory->second(_game, node);
 
-	auto room = std::make_unique<AdventureRoom>(_game, room_size, game_view, ui_view);
-
-	if (node["walk_area"]) {
-		auto walkArea = std::make_unique<WalkArea>();
-
-		for (const auto& areaNode : node["walk_area"]["areas"]) {
-			Area area{-1, areaNode["outer"].as<std::vector<glm::vec2>>(), {}, {}}; // {};
-			for (const auto& holeNode : areaNode["holes"]) {
-				area.holes.emplace_back(holeNode.as<std::vector<glm::vec2>>());
-			}
-			walkArea->addArea(area);
-		}
-		room->setWalkArea(std::move(walkArea));
+	if (auto collisionEngineNode = node["collision_engine"]) {
+		auto size = require<glm::ivec2>(collisionEngineNode, "size");
+		//auto collisionEngine = std::make_unique<CollisionEngine2D>(glm::vec3(size, 0.f));
+		room->addService<CollisionEngine2D>(glm::vec3(size, 0.f));
 
 	}
 
@@ -78,10 +79,7 @@ std::unique_ptr<Node> XMLRoomFactory::readNode(const YAML::Node &node) {
 	}
 	auto renderable = node["renderable"];
 	if (renderable) {
-		auto r = readRenderable(renderable);
-		if (r) {
-			n->addRenderable(std::move(r));
-		}
+		n->addRenderable(readRenderable(_game, renderable));
 	}
 
 	for (const auto& component : node["components"]) {
@@ -96,17 +94,17 @@ std::unique_ptr<Node> XMLRoomFactory::readNode(const YAML::Node &node) {
 	return std::move(n);
 }
 
-std::unique_ptr<Renderable> XMLRoomFactory::readRenderable(const YAML::Node &node) {
-	auto type = require<std::string>(node, "type");
-
-	auto factoryIter = _renderableFactories.find(type);
-	if (factoryIter != _renderableFactories.end()) {
-		return factoryIter->second(_game, node);
-	} else {
-		throw std::runtime_error("Unknown renderable type: " + type);
-	}
-	return nullptr;
-}
+//std::unique_ptr<Renderable> XMLRoomFactory::readRenderable(const YAML::Node &node) {
+//	auto type = require<std::string>(node, "type");
+//
+//	auto factoryIter = _renderableFactories.find(type);
+//	if (factoryIter != _renderableFactories.end()) {
+//		return factoryIter->second(_game, node);
+//	} else {
+//		throw std::runtime_error("Unknown renderable type: " + type);
+//	}
+//	return nullptr;
+//}
 
 std::unique_ptr<Component> XMLRoomFactory::readComponent(const YAML::Node &node) {
 	auto type = require<std::string>(node, "type");

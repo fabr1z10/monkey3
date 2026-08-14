@@ -44,6 +44,7 @@ void Controller2D::move(glm::vec3 delta) {
 void Controller2D::descendSlope(glm::vec3 delta) {
 	if (delta.x == 0.f) return;
 	auto r0 = delta.x > 0.f ? _raycastOrigins.bottomLeft : _raycastOrigins.bottomRight;
+	
 
 
 }
