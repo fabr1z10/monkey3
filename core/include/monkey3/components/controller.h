@@ -4,6 +4,8 @@
 #include <glm/glm.hpp>
 
 
+class CollisionEngine;
+
 struct ControllerInfo {
 	glm::vec3 size;
 	int maskUp;
@@ -23,6 +25,8 @@ struct ControllerInfo {
 class Controller : public Component {
 public:
 	Controller(const ControllerInfo&);
+
+	void start() override;
 
 	virtual void move(glm::vec3 delta) = 0;
 
@@ -53,6 +57,9 @@ protected:
 	float _horizontalRaySpacing;
 	
 	float _verticalRaySpacing;
+
+	CollisionEngine* _engine;
+
 };
 
 inline bool Controller::grounded() const {

@@ -19,7 +19,14 @@ protected:
 	void resetCollisions() override;
 
 private:
-	void descendSlope(glm::vec3 delta);
+	// the following three methods can modify delta, that's why delta is passed by reference
+	void climbSlope(glm::vec3& velocity, float slopeAngle);
+
+	void descendSlope(glm::vec3& delta);
+
+	void horizontalCollisions(glm::vec3& delta);
+
+	void verticalCollisions(glm::vec3& delta);
 
 	void updateRaycastOrigins();
 
@@ -30,4 +37,8 @@ private:
 	bool _descendingSlope;
 	float _slopeAngle;
 	float _slopeAngleOld;
+	int _maskUp;
+	int _maskDown;
+	float _skinWidth;
+
 };

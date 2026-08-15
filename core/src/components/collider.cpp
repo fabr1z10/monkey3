@@ -1,7 +1,5 @@
 #include <monkey3/components/collider.h>
 #include <monkey3/node.h>
-#include <monkey3/room.h>
-#include <monkey3/services/collisionengine.h>
 #include <iostream>
 
 using namespace shapes;
@@ -11,7 +9,6 @@ Collider::Collider(int flag, int mask, int tag) : _flag(flag), _mask(mask), _tag
 }
 
 void Collider::start() {
-	_engine = _node->getRoom()->getService<CollisionEngine>();
 
 }
 

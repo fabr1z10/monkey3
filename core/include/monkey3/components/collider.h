@@ -4,8 +4,6 @@
 #include <monkey3/shape.h>
 #include <monkey3/bounds.h>
 
-class CollisionEngine;
-
 class Collider : public Component {
 public:
 	Collider(int flag, int mask, int tag);
@@ -23,7 +21,6 @@ private:
 	int _flag;
 	int _mask;
 	int _tag;
-	CollisionEngine* _engine;
 };
 
 

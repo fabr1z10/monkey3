@@ -5,6 +5,8 @@
 #include <stdexcept>
 
 
+
+
 std::string loadFile(const std::string& path) {
 	std::ifstream file(path);
 	if (!file.is_open()) {
@@ -60,4 +62,8 @@ bool parseHexColor(const std::string& str, Color& color)
 	color.a = static_cast<uint8_t>(a);
 
 	return true;
+}
+
+float angle(glm::vec3 v1, glm::vec3 v2) {
+	return std::acos(glm::dot(v1, v2));
 }

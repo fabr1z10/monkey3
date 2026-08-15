@@ -1,9 +1,17 @@
 #include <monkey3/components/controller.h>
+#include <monkey3/node.h>
+#include <monkey3/room.h>
+#include <monkey3/services/collisionengine.h>
 
 
 Controller::Controller(const ControllerInfo& info) : Component(), _collisionStatus(0),
 	_horizontalRayCount(info.horizontalRayCount), _verticalRayCount(info.verticalRayCount) {
 	setSize(info.size);
+
+}
+
+void Controller::start() {
+	_engine = _node->getRoom()->getService<CollisionEngine>();
 
 }
 
