@@ -9,9 +9,9 @@ nodes:
       - type: "collider"
         shape: 
           type: "box"
-          width: 20
-          height: 10
-        flag: 1
+          width: 100
+          height: 40
+        flag: 2
         mask: 1
         tag: 2
 
@@ -20,6 +20,7 @@ nodes:
       id: "mario"
     components:
       - type: "player2D"
+        size: [16, 16, 0]
         maxSpeed: 300
         accelerationTime: 0.1
         jumpHeight: 72

@@ -121,11 +121,16 @@ std::unique_ptr<Component> readCollider(Game& game, const YAML::Node& node) {
 
 std::unique_ptr<Component> readPlayer2D(Game& game, const YAML::Node& node) {
 	ControllerInfo info;
-
+	info.size = require<glm::vec3>(node, "size");
 	info.maxSpeed = require<float>(node, "maxSpeed");
 	info.accelerationTime = require<float>(node, "accelerationTime");
 	info.jumpHeight = require<float>(node, "jumpHeight");
 	info.timeToJumpApex = require<float>(node, "timeToJumpApex");
+	info.maskDown = get<int>(node, "maskDown", 2);
+	info.maskUp = get<int>(node, "maskDown", 2 | 32);
+	info.horizontalRayCount = get<int>(node, "horizontalRayCount", 4);
+	info.verticalRayCount = get<int>(node, "verticalRayCount", 4);
+	info.skinWidth = get<float>(node, "skinWidth", .015f);
 	return std::make_unique<PlayerWalk2D>(game, info);
 }
 

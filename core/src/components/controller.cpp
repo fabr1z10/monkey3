@@ -5,7 +5,7 @@
 
 
 Controller::Controller(const ControllerInfo& info) : Component(), _collisionStatus(0),
-	_horizontalRayCount(info.horizontalRayCount), _verticalRayCount(info.verticalRayCount) {
+	_horizontalRayCount(info.horizontalRayCount), _verticalRayCount(info.verticalRayCount), _engine(nullptr) {
 	setSize(info.size);
 
 }

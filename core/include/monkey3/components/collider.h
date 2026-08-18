@@ -4,10 +4,14 @@
 #include <monkey3/shape.h>
 #include <monkey3/bounds.h>
 
+class CollisionEngine;
+
 class Collider : public Component {
 public:
 	Collider(int flag, int mask, int tag);
-	
+
+	virtual ~Collider();
+
 	void start() override;
 
 	void update(float) override {}
@@ -18,6 +22,7 @@ public:
 	
 	virtual const shapes::Shape* getShape() const = 0;
 private:
+	CollisionEngine* _engine;
 	int _flag;
 	int _mask;
 	int _tag;

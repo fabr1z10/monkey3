@@ -76,3 +76,7 @@ inline void Controller::setGrounded(bool value) {
 	else
 		_collisionStatus &= 0xFE;
 }
+
+inline void Controller::setCeiling() {
+	_collisionStatus |= 0x02u;
+}

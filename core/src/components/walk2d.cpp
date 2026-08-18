@@ -12,9 +12,6 @@ Walk2D::Walk2D(const ControllerInfo& info) : Controller2D(info), _maxSpeed(info.
 
 }
 
-void Walk2D::start() {
-
-}
 
 void Walk2D::update(float dt) {
 

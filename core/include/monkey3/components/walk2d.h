@@ -13,7 +13,6 @@ enum class WalkDirection {
 class Walk2D : public Controller2D {
 public:
 	Walk2D(const ControllerInfo&);
-	void start() override;
 	void update(float) override;
 	virtual void control() = 0;
 protected:

@@ -1,15 +1,24 @@
 #include <monkey3/components/collider.h>
 #include <monkey3/node.h>
 #include <iostream>
+#include <monkey3/room.h>
+#include <monkey3/services/collisionengine.h>
 
 using namespace shapes;
 
-Collider::Collider(int flag, int mask, int tag) : _flag(flag), _mask(mask), _tag(tag) {
+Collider::Collider(int flag, int mask, int tag) : _flag(flag), _mask(mask), _tag(tag), _engine(nullptr) {
 
 }
 
-void Collider::start() {
+Collider::~Collider() {
+	if (_engine) {
+		_engine->remove(this);
+	}
+}
 
+void Collider::start() {
+	_engine = _node->getRoom()->getService<CollisionEngine>();
+	_engine->add(this);
 }
 
 int Collider::getCollisionFlag() const {
