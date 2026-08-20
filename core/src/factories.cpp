@@ -18,7 +18,8 @@
 const std::unordered_map<std::string, FactoryMethod<shapes::Shape> >& shapeFactories() {
 	static const std::unordered_map<std::string, FactoryMethod<shapes::Shape> > factories {
 		{ "box",     readBox },
-		{ "ellipse", readEllipse }
+		{ "ellipse", readEllipse },
+		{ "polygon", readPolygon }
 	};
 
 	return factories;
@@ -131,6 +132,9 @@ std::unique_ptr<Component> readPlayer2D(Game& game, const YAML::Node& node) {
 	info.horizontalRayCount = get<int>(node, "horizontalRayCount", 4);
 	info.verticalRayCount = get<int>(node, "verticalRayCount", 4);
 	info.skinWidth = get<float>(node, "skinWidth", .015f);
+	info.maxClimbAngle = glm::radians(get<float>(node, "maxClimbAngle", 80.f));
+	info.maxDescendAngle = glm::radians(get<float>(node, "maxDescendAngle", 80.f));
+
 	return std::make_unique<PlayerWalk2D>(game, info);
 }
 

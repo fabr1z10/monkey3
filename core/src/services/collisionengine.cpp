@@ -1,4 +1,5 @@
 #include <monkey3/services/collisionengine.h>
+#include <monkey3/node.h>
 
 CollisionEngine::CollisionEngine(glm::vec3 size) : IService(), _size(size) {
 	for (int i = 0; i < 3; ++i) {
@@ -90,10 +91,10 @@ RayCastHit CollisionEngine2D::rayCastAxis(
             //}
 
             auto* shape = c->getShape();
+			auto colliderPosition = c->getNode()->getWorldPosition();
+            auto result = shape->raycastAxis(origin - colliderPosition, length, axis);
 
-            auto result = shape->raycastAxis(origin, length, axis);
-
-            if (!out.collide || (out.collide && result.length < out.length)) {
+            if (!out.collide || (out.collide && result.collide && result.length < out.length)) {
                 out = result;
             }
         }

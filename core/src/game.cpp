@@ -157,6 +157,7 @@ void Game::run() {
 		glfwPollEvents();
 		double now = glfwGetTime();
 		float dt = now - last;
+		dt = 1.f / 60.f;
 		last = now;
 
 		_room->update(dt);

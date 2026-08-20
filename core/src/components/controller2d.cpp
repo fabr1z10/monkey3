@@ -2,6 +2,7 @@
 #include <monkey3/services/collisionengine.h>
 #include <monkey3/node.h>
 #include <monkey3/utils.h>
+#include <iostream>
 
 Controller2D::Controller2D(const ControllerInfo& info) : Controller(info), _maxClimbAngle(info.maxClimbAngle),
 _maxDescendAngle(info.maxDescendAngle), _maskUp(info.maskUp), _maskDown(info.maskDown), _skinWidth(info.skinWidth) {
@@ -10,6 +11,7 @@ _maxDescendAngle(info.maxDescendAngle), _maskUp(info.maskUp), _maskDown(info.mas
 
 void Controller2D::updateRaycastOrigins() {
 	auto pos = _node->getWorldPosition();
+	std::cout << pos.y << "\n";
 	_raycastOrigins.bottomLeft = pos - glm::vec3(_halfWidth, 0.f, 0.f);
 	_raycastOrigins.bottomRight = pos + glm::vec3(_halfWidth, 0.f, 0.f);
 	_raycastOrigins.topLeft = _raycastOrigins.bottomLeft + glm::vec3(0.f, _size.y, 0.f);
@@ -65,7 +67,7 @@ void Controller2D::climbSlope(glm::vec3& velocity, float slopeAngle) {
 void Controller2D::descendSlope(glm::vec3& delta) {
 	if (delta.x == 0.f) return;
 	auto r0 = delta.x > 0.f ? _raycastOrigins.bottomLeft : _raycastOrigins.bottomRight;
-	auto hit = _engine->rayCastAxis(r0, 100.f, _maskDown, _node, Axis::Y);
+	auto hit = _engine->rayCastAxis(r0, -100.f, _maskDown, _node, Axis::Y);
 	if (hit.collide) {
 		float slopeAngle = angle(hit.normal, glm::vec3(0.f, 1.f, 0.f));
 		if (slopeAngle != 0.f && slopeAngle <= _maxDescendAngle && (sign(hit.normal.x) == sign(delta.x))) {
