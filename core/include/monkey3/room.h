@@ -3,7 +3,6 @@
 #include "monkey3/renderer.h"
 #include "monkey3/node.h"
 #include "monkey3/service.h"
-#include "service.h"
 #include <typeindex>
 
 class Game;

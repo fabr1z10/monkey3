@@ -19,7 +19,13 @@ void ScummActor::render(Renderer& r, glm::mat4 worldTransform) {
 			x_move += glm::vec2(frame.movex, frame.movey);
 			pos = actor_pos + x_move_cur;
 			glm::vec2 bottomLeft = pos + glm::vec2(0.f, -frame.height);
-			r.submitQuad(bottomLeft, glm::vec2(frame.width, frame.height), frame.uvCoords, glm::vec4(1.f), _info->getTexture());
+			QuadInfo info;
+			info.position = glm::vec3(bottomLeft, 0.f);
+			info.size = glm::vec2(frame.width, frame.height);
+			info.uvRect = frame.uvCoords;
+			info.color = glm::vec4(1.f);
+			info.textureId = _info->getTexture();				
+			//r.submitQuad(info);
 			if ( _cycle > _info->getFrameDuration()) {
 				i.current++;
 				if (i.current > i.end) {

@@ -15,7 +15,7 @@ bool Point::contains(const glm::vec2& p) const {
 void Point::render(Renderer & r, glm::mat4 worldTransform) {
 	glm::vec3 pos = glm::vec3(worldTransform[3]);
 	glm::vec3 worldPos = pos + glm::vec3(_coords, 0.f);
-	r.submitLine(worldPos, worldPos + glm::vec3(1, 1, 0), {_color.r, _color.g, _color.b, _color.a});
+	r.submitGeometry<LineInfo>(worldPos, worldPos + glm::vec3(1, 1, 0), _color);
 }
 
 RayCastHit Point::raycastAxis(glm::vec3 origin, float length, Axis axis) const {

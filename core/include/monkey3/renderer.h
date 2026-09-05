@@ -2,15 +2,19 @@
 
 #include <array>
 #include "glm/glm.hpp"
+#include "monkey3/renderpass.h"
 #include "vertex.h"
 #include "batch.h"
 #include "shader.h"
 #include "monkey3/framebuffer.h"
 #include <optional>
 #include <memory>
+#include <typeindex>
 #include "monkey3/camera.h"
 #include "monkey3/tex.h"
-
+#include <monkey3/renderitem.h>
+#include <utility>
+#include <stdexcept>
 
 class Room;
 
@@ -21,19 +25,6 @@ static constexpr int MAX_TEXTURE_SLOTS = 16;
 using RenderLayerMask = uint32_t;
 
 
-struct RenderPass {
-	RenderPass();
-	RenderPass(int width, int height, uint32_t mask);
-
-	std::unique_ptr<OrthoCamera> camera = nullptr;
-	glm::ivec4 viewport{0, 0, 0, 0};
-
-	glm::vec2 getWorldCoordinates(glm::vec2 deviceCoordinates) const;
-
-
-
-	uint32_t layerMask = 0xFFFFFFFF;
-};
 
 struct RenderContext {
 	uint32_t layerMask;
@@ -59,10 +50,6 @@ public:
 
 	void initBatches();
 
-	void submitQuad(const glm::vec2& pos, const glm::vec2& size, const glm::vec4& uvRect, const glm::vec4& color, int textureId);
-
-	void submitLine(const glm::vec2& start, const glm::vec2& end, const glm::vec4& color);
-
 	void setViewport(const glm::ivec4& viewport);
 
 	void addRenderPass(RenderPass pass);
@@ -73,56 +60,104 @@ public:
 	size_t registerTexture(const std::string& path);
 
 	Game& getGame() { return _game; }
+
+	template<typename T, typename... Args>
+	void addShaderItem(Args&&... args) {
+		using Primitive = typename T::PrimitiveType;
+		if (_primitiveItems.count(typeid(Primitive)) > 0) {
+			throw std::runtime_error("Render item for this primitive type already exists");
+		}
+		auto item = std::make_unique<T>(std::forward<Args>(args)...);
+		T* ptr = item.get();
+
+		_primitiveItems.emplace(typeid(Primitive), ptr);
+		_renderItems.push_back(std::move(item));
+	}
+
+	template<typename Primitive>
+	void submitGeometry(const Primitive& primitive)
+	{
+		submitGeometryImpl<Primitive>(primitive);
+
+	}
+
+	template<typename Primitive, typename... Args>
+	void submitGeometry(Args&&... args)
+	{
+		Primitive primitive(
+			std::forward<Args>(args)...);
+
+		submitGeometryImpl<Primitive>(primitive);
+	}
+
 private:
-	template<typename T>
-	void draw(Batch<T>& batch, GLenum mode) {
-		glBindVertexArray(batch.vao);
-		// =========================
-		// CPU → GPU upload (SUBDATA)
-		// =========================
-		glBindBuffer(GL_ARRAY_BUFFER, batch.vbo);
-		glBufferSubData(GL_ARRAY_BUFFER, 0, batch.vertices.size() * sizeof(T), batch.vertices.data());
+	template<typename Primitive>
+	void submitGeometryImpl(const Primitive& primitive)
+	{
+		auto it = _primitiveItems.find(typeid(Primitive));
 
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, batch.ebo);
-		glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, batch.indices.size() * sizeof(uint32_t), batch.indices.data());
+		if (it == _primitiveItems.end())
+			throw std::runtime_error(
+				"No RenderItem registered for this primitive type: " + std::string(Primitive::name));
 
-		glDrawElements(mode,
-			batch.indices.size(),
-			GL_UNSIGNED_INT,
-			nullptr);
+		it->second->submitPrimitive(&primitive);
 	}
 
-	template<typename T>
-	void initBatch(Batch<T>& batch, int maxVertices, int maxIndices) {
-		glGenVertexArrays(1, &batch.vao);
-		glGenBuffers(1, &batch.vbo);
-		glGenBuffers(1, &batch.ebo);
-		glBindVertexArray(batch.vao);
-		glBindBuffer(GL_ARRAY_BUFFER, batch.vbo);
+	//template<typename T>
+	//void draw(Batch<T>& batch, GLenum mode) {
+	//	glBindVertexArray(batch.vao);
+	//	// =========================
+	//	// CPU → GPU upload (SUBDATA)
+	//	// =========================
+	//	glBindBuffer(GL_ARRAY_BUFFER, batch.vbo);
+	//	glBufferSubData(GL_ARRAY_BUFFER, 0, batch.vertices.size() * sizeof(T), batch.vertices.data());
 
-		// VBO (allocate max size ONCE)
-		glBufferData(GL_ARRAY_BUFFER,
-					 maxVertices * sizeof(T),
-					 nullptr,
-					 GL_DYNAMIC_DRAW);
+	//	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, batch.ebo);
+	//	glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, batch.indices.size() * sizeof(uint32_t), batch.indices.data());
 
-		VertexTraits<T>::setup();
+	//	glDrawElements(mode,
+	//		batch.indices.size(),
+	//		GL_UNSIGNED_INT,
+	//		nullptr);
+	//}
 
-		// EBO (allocate max size ONCE)
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, batch.ebo);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-					 maxIndices * sizeof(uint32_t),
-					 nullptr,
-					 GL_DYNAMIC_DRAW);
-	}
+	//template<typename T>
+	//void initBatch(Batch<T>& batch, int maxVertices, int maxIndices) {
+	//	glGenVertexArrays(1, &batch.vao);
+	//	glGenBuffers(1, &batch.vbo);
+	//	glGenBuffers(1, &batch.ebo);
+	//	glBindVertexArray(batch.vao);
+	//	glBindBuffer(GL_ARRAY_BUFFER, batch.vbo);
+
+	//	// VBO (allocate max size ONCE)
+	//	glBufferData(GL_ARRAY_BUFFER,
+	//				 maxVertices * sizeof(T),
+	//				 nullptr,
+	//				 GL_DYNAMIC_DRAW);
+
+	//	VertexTraits<T>::setup();
+
+	//	// EBO (allocate max size ONCE)
+	//	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, batch.ebo);
+	//	glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+	//				 maxIndices * sizeof(uint32_t),
+	//				 nullptr,
+	//				 GL_DYNAMIC_DRAW);
+	//}
 
 	Game& _game;
 	void initScreenQuad();
 	void drawScreenQuad();
-	Batch<QuadVertex> _quadBatch;
-	Batch<LineVertex> _lineBatch;
-	std::optional<Shader> _quadShader;
-	std::optional<Shader> _lineShader;
+	
+	// renderer no longer owns these
+	//Batch<QuadVertex> _quadBatch;
+	//Batch<LineVertex> _lineBatch;
+	//std::optional<Shader> _quadShader;
+	//std::optional<Shader> _lineShader;
+	std::vector<std::unique_ptr<IRenderItem>> _renderItems;
+	std::unordered_map<std::type_index, IRenderItem*> _primitiveItems;
+
+
 	int _maxQuads = 1000;
 	int _maxLines = 1000;
 	FrameBuffer _frameBuffer;

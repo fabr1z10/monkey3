@@ -24,10 +24,10 @@ void Polygon::render(Renderer & r, glm::mat4 worldTransform) {
 	glm::vec3 P0 = start;
 	for (size_t i = 1; i < _points.size() ; i++) {
 		glm::vec3 P1 = pos + glm::vec3(_points[i], 0.f);
-		r.submitLine(P0, P1, {_color.r, _color.g, _color.b, _color.a});
+        r.submitGeometry<LineInfo>(P0, P1, _color);
 		P0 = P1;
 	}
-	r.submitLine(P0, start, {_color.r, _color.g, _color.b, _color.a});
+    r.submitGeometry<LineInfo>(P0, start, _color);
 }
 
 RayCastHit shapes::Polygon::raycastAxis(

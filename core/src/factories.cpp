@@ -70,7 +70,7 @@ std::unique_ptr<Renderable> readQuad(Game& game, const YAML::Node& node) {
 
 std::unique_ptr<shapes::Shape> readPoint(Game& game, const YAML::Node& node) {
 	auto position = require<glm::vec2>(node, "position");
-	auto color =  get<Color>(node, "color", Colors::White);
+	auto color = get<Color>(node, "color", Colors::White).toVec4();
 	auto point = std::make_unique<shapes::Point>(position.x, position.y);
 	point->setColor(color);
 	return point;
@@ -87,7 +87,7 @@ std::unique_ptr<shapes::Shape> readBox(Game& game, const YAML::Node& node) {
 	auto width = require<float>(node, "width");
 	auto height = require<float>(node, "height");
 	auto anchor = get<glm::vec2>(node, "anchor", glm::vec2(0.f));
-	auto color = get<Color>(node, "color", Colors::White);
+	auto color = get<Color>(node, "color", Colors::White).toVec4();
 	auto box = std::make_unique<shapes::Box>(width, height, anchor);
 	box->setColor(color);
 	return box;
@@ -95,7 +95,7 @@ std::unique_ptr<shapes::Shape> readBox(Game& game, const YAML::Node& node) {
 
 std::unique_ptr<shapes::Shape> readPolygon(Game& game, const YAML::Node& node) {
 	auto vertices = require<std::vector<glm::vec2>>(node, "vertices");
-	auto color =  get<Color>(node, "color", Colors::White);
+	auto color = get<Color>(node, "color", Colors::White).toVec4();
 
 	auto polygon = std::make_unique<shapes::Polygon>(vertices);
 	polygon->setColor(color);
@@ -105,7 +105,7 @@ std::unique_ptr<shapes::Shape> readPolygon(Game& game, const YAML::Node& node) {
 std::unique_ptr<shapes::Shape> readEllipse(Game& game, const YAML::Node& node) {
 	auto rx = require<float>(node, "rx");
 	auto ry = require<float>(node, "ry");
-	auto color =  get<Color>(node, "color", Colors::White);
+	auto color = get<Color>(node, "color", Colors::White).toVec4();
 
 	auto ellipse = std::make_unique<shapes::Ellipse>(rx, ry);
 	ellipse->setColor(color);

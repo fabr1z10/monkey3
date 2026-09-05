@@ -1,5 +1,5 @@
 #include <monkey3/renderables/quad.h>
-
+#include <monkey3/primitive.h>
 
 Quad::Quad(int texId, const Tex* tex, glm::ivec4 coords, glm::vec2 anchor) : _anchor(anchor) {
 	_texId = texId;
@@ -17,7 +17,15 @@ Quad::Quad(int texId, const Tex* tex, glm::ivec4 coords, glm::vec2 anchor) : _an
 
 void Quad::render(Renderer& r, glm::mat4 worldTransform) {
 
-	glm::vec2 pos = glm::vec2(worldTransform[3]);
-	pos -= _anchor;
-	r.submitQuad(pos, _size, _coords, glm::vec4(1.f), _texId);
+	auto pos = worldTransform[3];
+	
+	QuadInfo info;
+	info.position = pos;
+	info.anchor = _anchor;
+	info.size = _size;
+	info.uvRect = _coords;
+	info.color = glm::vec4(1.f);
+	info.textureId = _texId;
+	info.paletteId = _palId;
+	//r.submitQuad(info);
 }

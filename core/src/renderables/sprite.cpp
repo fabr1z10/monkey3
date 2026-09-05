@@ -15,12 +15,22 @@ void Sprite::setAnimation(const std::string &animation) {
 
 
 void Sprite::render(Renderer& r, glm::mat4 worldTransform) {
-	glm::vec2 pos = glm::vec2(worldTransform[3]);
+	auto pos = worldTransform[3];
 
 	const auto& info = _info->getFrameData(_animation, _frame);
-	pos -= info.anchor;
+	
+	QuadInfo quadInfo;
 
-	r.submitQuad(pos, info.size, info.uvCoords, glm::vec4(1.f), _info->getTexture());
+	quadInfo.position = pos;
+	quadInfo.anchor = info.anchor;
+	quadInfo.size = info.size;
+	quadInfo.uvRect = info.uvCoords;
+	quadInfo.color = glm::vec4(1.f);
+	quadInfo.textureId = _info->getTexture();
+	quadInfo.paletteId = 0;
+
+
+	//r.submitQuad(quadInfo);
 
 	_cycle++;
 	if (_cycle > info.duration) {

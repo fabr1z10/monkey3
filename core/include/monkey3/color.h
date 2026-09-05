@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <glm/glm.hpp>
 
 struct Color
 {
@@ -8,6 +9,10 @@ struct Color
 	uint8_t g = 0;
 	uint8_t b = 0;
 	uint8_t a = 255;
+
+	glm::vec4 toVec4() const {
+		return glm::vec4(r / 255.f, g / 255.f, b / 255.f, a / 255.f);
+	}
 };
 
 namespace Colors

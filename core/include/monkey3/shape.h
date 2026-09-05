@@ -28,17 +28,17 @@ namespace shapes {
 
 		//virtual void render(Renderer &, glm::mat4 worldTransform) = 0;
 
-		void setColor(Color);
+		void setColor(glm::vec4 color);
 
 		Bounds getBounds() const;
 
 		virtual RayCastHit raycastAxis(glm::vec3 origin, float length, Axis axis) const = 0;
 	protected:
-		Color _color;
+		glm::vec4 _color;
 		Bounds _bounds;
 	};
 
-	inline void Shape::setColor(Color color) {
+	inline void Shape::setColor(glm::vec4 color) {
 		_color = color;
 	}
 

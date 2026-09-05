@@ -41,7 +41,7 @@ void Ellipse::render(Renderer & r, glm::mat4 worldTransform) {
 				_radii.y * std::sin(t),
 				0);
 
-		r.submitLine(prev, curr, {_color.r, _color.g, _color.b, _color.a});
+		r.submitGeometry<LineInfo>(prev, curr, _color);
 
 		prev = curr;
 	}

@@ -20,18 +20,23 @@ glm::vec2 RenderPass::getWorldCoordinates(glm::vec2 deviceCoordinates) const {
 	return {xw, yw};
 }
 
+
+
 void Renderer::init(glm::ivec2 deviceSize) {
 
-	_quadShader.emplace("shaders/quad.vert", "shaders/quad.frag");
-	_quadShader->use();
-	int samplers[16];
-	for (int i = 0; i < 16; i++)
-		samplers[i] = i;
 
-	GLint loc = glGetUniformLocation(_quadShader->id(), "uTextures");
-	glUniform1iv(loc, 16, samplers);
 
-	_lineShader.emplace("shaders/line.vert", "shaders/line.frag");
+	
+	//_quadShader.emplace("shaders/quad.vert", "shaders/quad.frag");
+	//_quadShader->use();
+	//int samplers[16];
+	//for (int i = 0; i < 16; i++)
+	//	samplers[i] = i;
+
+	//GLint loc = glGetUniformLocation(_quadShader->id(), "uTextures");
+	//glUniform1iv(loc, 16, samplers);
+
+	//_lineShader.emplace("shaders/line.vert", "shaders/line.frag");
 	_screenShader.emplace("shaders/screen.vert", "shaders/screen.frag");
 	_screenShader->use();
 	_uSceneLoc = glGetUniformLocation(_screenShader->id(), "uScene");
@@ -68,24 +73,33 @@ void Renderer::render(Room &room) {
 	beginFrame();
 	for (const auto &pass: _passes) {
 		beginPass(pass);
-		const glm::mat4 vp = pass.camera->getViewProjectionMatrix();
 
-		_quadBatch.clear();
-		_lineBatch.clear();
+		// clear
+		for (auto& RenderItem : _renderItems) {
+			RenderItem->clear();
+		}
+
+		//_quadBatch.clear();
+		//_lineBatch.clear();
 		// Remember. first you clear all vertices and indices from the batches, then you render the room,
 		// which will submit new vertices and indices to the batches, then you flush the batches to the GPU.
 		room.render({pass.layerMask});
-		// flush batches
-		_quadShader->use();
-		_quadShader->setMat4("uVP", vp);
-		for (int i = 0; i < _textures.size(); i++) {
-			glActiveTexture(GL_TEXTURE0 + i);
-			_textures[i]->bind();
+
+		for (auto& RenderItem : _renderItems) {
+			RenderItem->render(pass);
 		}
-		draw(_quadBatch, GL_TRIANGLES);
-		_lineShader->use();
-		_lineShader->setMat4("uVP", vp);
-		draw(_lineBatch, GL_LINES);
+
+		// flush batches
+		//_quadShader->use();
+		//_quadShader->setMat4("uVP", vp);
+		//for (int i = 0; i < _textures.size(); i++) {
+		//	glActiveTexture(GL_TEXTURE0 + i);
+		//	_textures[i]->bind();
+		//}
+		//draw(_quadBatch, GL_TRIANGLES);
+		//_lineShader->use();
+		//_lineShader->setMat4("uVP", vp);
+		//draw(_lineBatch, GL_LINES);
 		endPass(pass);
 	}
 	endFrame();
@@ -135,8 +149,12 @@ void Renderer::endFrame() {
 
 
 void Renderer::initBatches() {
-	initBatch(_quadBatch, _maxQuads * 4, _maxQuads * 6);
-	initBatch(_lineBatch, _maxLines * 2, _maxLines * 2);
+	for (const auto& renderItem : _renderItems) {
+		renderItem->init();
+	}
+
+	//initBatch(_quadBatch, _maxQuads * 4, _maxQuads * 6);
+	//initBatch(_lineBatch, _maxLines * 2, _maxLines * 2);
 }
 
 void Renderer::initScreenQuad() {
@@ -185,60 +203,67 @@ void Renderer::clearRenderPasses() {
 	_passes.clear();
 }
 
-void Renderer::submitLine(const glm::vec2 &start, const glm::vec2 &end, const glm::vec4 &color) {
-	LineVertex v1;
-	v1.pos = {start.x, start.y, 0.f};
-	v1.color = color;
-	LineVertex v2;
-	v2.pos = {end.x, end.y, 0.f};
-	v2.color = color;
-	auto index = _lineBatch.vertices.size();
-	_lineBatch.vertices.push_back(v1);
-	_lineBatch.vertices.push_back(v2);
-	_lineBatch.indices.push_back(index);
-	_lineBatch.indices.push_back(index + 1);
-}
-
-void Renderer::submitQuad(const glm::vec2 &pos, const glm::vec2 &size, const glm::vec4 &uvRect, const glm::vec4 &color, int textureId) {
-	// assumption: pos is the bottom left of the quad
-	// uvrect gives: x, y = top left point in uv coords, z, w = size in uv coords
-	QuadVertex bottomLeft;
-	bottomLeft.pos = glm::vec3(pos.x, pos.y, 0.f);
-	bottomLeft.uv = glm::vec2(uvRect.x, uvRect.y + uvRect.w);
-	bottomLeft.color = color;
-	bottomLeft.texIndex = textureId;
-
-	QuadVertex bottomRight;
-	bottomRight.pos = glm::vec3(pos.x + size.x, pos.y, 0.f);
-	bottomRight.uv = glm::vec2(uvRect.x + uvRect.z, uvRect.y + uvRect.w);
-	bottomRight.color = color;
-	bottomRight.texIndex = textureId;
-
-	QuadVertex topRight;
-	topRight.pos = glm::vec3(pos.x + size.x, pos.y + size.y, 0.f);
-	topRight.uv = glm::vec2(uvRect.x + uvRect.z, uvRect.y);
-	topRight.color = color;
-	topRight.texIndex = textureId;
-
-	QuadVertex topLeft;
-	topLeft.pos = glm::vec3(pos.x, pos.y + size.y, 0.f);
-	topLeft.uv = glm::vec2(uvRect.x, uvRect.y);
-	topLeft.color = color;
-	topLeft.texIndex = textureId;
-
-	auto index = _quadBatch.vertices.size();
-	_quadBatch.vertices.push_back(bottomLeft);
-	_quadBatch.vertices.push_back(bottomRight);
-	_quadBatch.vertices.push_back(topRight);
-	_quadBatch.vertices.push_back(topLeft);
-	_quadBatch.indices.push_back(index);
-	_quadBatch.indices.push_back(index+1);
-	_quadBatch.indices.push_back(index+2);
-	_quadBatch.indices.push_back(index+2);
-	_quadBatch.indices.push_back(index+3);
-	_quadBatch.indices.push_back(index);
-
-}
+//void Renderer::submitLine(const glm::vec2 &start, const glm::vec2 &end, const glm::vec4 &color) {
+//	LineVertex v1;
+//	v1.pos = {start.x, start.y, 0.f};
+//	v1.color = color;
+//	LineVertex v2;
+//	v2.pos = {end.x, end.y, 0.f};
+//	v2.color = color;
+//	auto index = _lineBatch.vertices.size();
+//	_lineBatch.vertices.push_back(v1);
+//	_lineBatch.vertices.push_back(v2);
+//	_lineBatch.indices.push_back(index);
+//	_lineBatch.indices.push_back(index + 1);
+//}
+//
+//void Renderer::submitQuad(const QuadInfo& info) {
+//
+//	auto it = _primitiveTypeToRenderItemIndex.find(GL_QUADS);
+//	if (it == _primitiveTypeToRenderItemIndex.end()) {
+//		throw std::runtime_error("No render item registered for GL_QUADS");		
+//	}
+//	_renderItem
+//
+//	// assumption: pos is the bottom left of the quad
+//	// uvrect gives: x, y = top left point in uv coords, z, w = size in uv coords
+//	QuadVertex bottomLeft;
+//	bottomLeft.pos = glm::vec3(pos.x, pos.y, 0.f);
+//	bottomLeft.uv = glm::vec2(uvRect.x, uvRect.y + uvRect.w);
+//	bottomLeft.color = color;
+//	bottomLeft.texIndex = textureId;
+//
+//	QuadVertex bottomRight;
+//	bottomRight.pos = glm::vec3(pos.x + size.x, pos.y, 0.f);
+//	bottomRight.uv = glm::vec2(uvRect.x + uvRect.z, uvRect.y + uvRect.w);
+//	bottomRight.color = color;
+//	bottomRight.texIndex = textureId;
+//
+//	QuadVertex topRight;
+//	topRight.pos = glm::vec3(pos.x + size.x, pos.y + size.y, 0.f);
+//	topRight.uv = glm::vec2(uvRect.x + uvRect.z, uvRect.y);
+//	topRight.color = color;
+//	topRight.texIndex = textureId;
+//
+//	QuadVertex topLeft;
+//	topLeft.pos = glm::vec3(pos.x, pos.y + size.y, 0.f);
+//	topLeft.uv = glm::vec2(uvRect.x, uvRect.y);
+//	topLeft.color = color;
+//	topLeft.texIndex = textureId;
+//
+//	auto index = _quadBatch.vertices.size();
+//	_quadBatch.vertices.push_back(bottomLeft);
+//	_quadBatch.vertices.push_back(bottomRight);
+//	_quadBatch.vertices.push_back(topRight);
+//	_quadBatch.vertices.push_back(topLeft);
+//	_quadBatch.indices.push_back(index);
+//	_quadBatch.indices.push_back(index+1);
+//	_quadBatch.indices.push_back(index+2);
+//	_quadBatch.indices.push_back(index+2);
+//	_quadBatch.indices.push_back(index+3);
+//	_quadBatch.indices.push_back(index);
+//
+//}
 
 
 size_t Renderer::registerTexture(const std::string& path) {
@@ -253,10 +278,10 @@ size_t Renderer::registerTexture(const std::string& path) {
 	_textures.push_back(tex);
 	return _textures.size() - 1;
 }
-
-void Renderer::clear() {
-	_textures.clear();
-	_quadBatch.clear();
-	_lineBatch.clear();
-
-}
+//
+//void Renderer::clear() {
+//	_textures.clear();
+//	_quadBatch.clear();
+//	_lineBatch.clear();
+//
+//}

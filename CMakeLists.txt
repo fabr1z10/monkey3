@@ -34,10 +34,10 @@ find_package(yaml-cpp REQUIRED)
 # ----------------------------------------------------
 # 1️⃣ Build the C++ core library (engine only)
 # ----------------------------------------------------
-file(GLOB ENGINE_SOURCES CONFIGURE_DEPENDS core/src/*.cpp core/src/math/*.cpp
+file(GLOB ENGINE_SOURCES CONFIGURE_DEPENDS core/src/*.cpp core/src/math/*.cpp core/src/shaders/*.cpp
         core/src/renderables/*.cpp core/src/components/*.cpp core/src/shapes/*.cpp core/src/services/*.cpp)
 
-add_library(monkey_core STATIC ${ENGINE_SOURCES})
+add_library(monkey_core STATIC ${ENGINE_SOURCES} "core/include/monkey3/shaders/lineshader.h" "core/include/monkey3/shaders/quadpalshader.h" "core/src/shaders/lineshader.cpp")
 
 
 target_include_directories(monkey_core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/core/include
@@ -56,7 +56,7 @@ message(STATUS "DEMO_SOURCES = ${DEMO_SOURCES}")
 foreach(demo ${DEMO_SOURCES})
     get_filename_component(demo_name ${demo} NAME_WE)
 
-    add_executable(${demo_name} ${demo})
+    add_executable(${demo_name} ${demo} "core/include/monkey3/shaders/lineshader.h" "core/include/monkey3/shaders/quadpalshader.h" "core/src/shaders/lineshader.cpp")
 
     target_compile_definitions(${demo_name} PRIVATE
         PROJECT_ASSET_DIR="${PROJECT_ASSET_DIR}"
@@ -70,7 +70,7 @@ endforeach()
 # 2️⃣ Test
 # ----------------------------------------------------
 enable_testing()
-add_executable(unittest unittest/main.cpp)
+add_executable(unittest unittest/main.cpp "core/include/monkey3/shaders/lineshader.h" "core/include/monkey3/shaders/quadpalshader.h" "core/src/shaders/lineshader.cpp")
 target_link_libraries(unittest PRIVATE monkey_core Catch2::Catch2WithMain)
 include(CTest)
 include(Catch)

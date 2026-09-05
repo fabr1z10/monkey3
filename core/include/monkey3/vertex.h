@@ -10,11 +10,21 @@ struct QuadVertex {
 	glm::vec2 uv;
 	glm::vec4 color;
 	float texIndex;
+
+	static constexpr size_t verticesPerPrimitive = 4;
+	static constexpr size_t indicesPerPrimitive = 6;
+	static constexpr GLenum primitiveType = GL_TRIANGLES;
+
 };
 
 struct LineVertex {
 	glm::vec3 pos;
 	glm::vec4 color;
+
+	static constexpr size_t verticesPerPrimitive = 2;
+	static constexpr size_t indicesPerPrimitive = 2;
+	static constexpr GLenum primitiveType = GL_LINES;
+
 };
 
 template<typename T>

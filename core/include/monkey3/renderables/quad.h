@@ -11,6 +11,7 @@ public:
 
 private:
 	int _texId;
+	int _palId;
 	glm::vec2 _anchor;
 	glm::vec2 _size;
 	glm::vec4 _coords;

@@ -1,5 +1,5 @@
 #include <monkey3/shapes/box.h>
-
+#include <monkey3/primitive.h>
 
 using namespace shapes;
 
@@ -21,10 +21,10 @@ void Box::render(Renderer& r, glm::mat4 worldTransform) {
 	glm::vec3 P1 = P0 + glm::vec3(_size.x, 0.f, 0.f);
 	glm::vec3 P2 = P1 + glm::vec3(0, _size.y, 0.f);
 	glm::vec3 P3 = P0 + glm::vec3(0, _size.y, 0.f);
-	r.submitLine(P0, P1, {_color.r, _color.g, _color.b, _color.a});
- 	r.submitLine(P1, P2, {_color.r, _color.g, _color.b, _color.a});
-	r.submitLine(P2, P3, {_color.r, _color.g, _color.b, _color.a});
-	r.submitLine(P3, P0, {_color.r, _color.g, _color.b, _color.a});
+	r.submitGeometry<LineInfo>(P0, P1, _color);
+ 	r.submitGeometry<LineInfo>(P1, P2, _color);
+	r.submitGeometry<LineInfo>(P2, P3, _color);
+	r.submitGeometry<LineInfo>(P3, P0, _color);
 
 }
 
