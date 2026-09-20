@@ -42,7 +42,6 @@ void Game::init() {
 
 
 
-	_renderer.init(_deviceSize);
 }
 
 void Game::initGL() {
@@ -147,6 +146,9 @@ void Game::keyCallback(GLFWwindow *window, int key, int scancode, int action, in
 }
 
 void Game::run() {
+	_renderer.init(_deviceSize);
+
+
 	if (!_roomFactory) throw std::runtime_error("Room factory not set");
 	_room = _roomFactory->createRoom();
 

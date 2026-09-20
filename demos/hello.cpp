@@ -35,6 +35,8 @@ int main() {
 		// need at least one pass, or render won't be called!
 		g.addRenderPass(RenderPass(320, 200, 1));
 		g.renderer().addShaderItem<LineRenderItem>(1000);
+
+
 		g.run();
 	}
 	catch (const std::exception& e) {

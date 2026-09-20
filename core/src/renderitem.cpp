@@ -23,13 +23,15 @@ void LineRenderItem::submitPrimitiveTyped(const LineInfo& info) {
 	v1.color = info.color;
 	v2.pos = info.end;
 	v2.color = info.color;
+	auto index = this->batch().vertices.size();
 	this->batch().vertices.push_back(v1);
 	this->batch().vertices.push_back(v2);
+	this->batch().indices.push_back(index);
+	this->batch().indices.push_back(index+1);
 	//	v1.color = color;
 	
 	//	v2.pos = {end.x, end.y, 0.f};
 	//	v2.color = color;
-	//	auto index = _lineBatch.vertices.size();
 	//	_lineBatch.vertices.push_back(v1);
 	//	_lineBatch.vertices.push_back(v2);
 	//	_lineBatch.indices.push_back(index);
